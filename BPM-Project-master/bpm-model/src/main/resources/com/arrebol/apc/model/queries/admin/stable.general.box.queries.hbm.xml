@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"https://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    
+    <query name="findAllStableGeneralBoxByOffice">
+        <![CDATA[
+            SELECT 
+                c
+            FROM StableGeneralBox c 
+                WHERE office = :office
+                AND activeStatus = :activeStatus
+            ORDER BY createdOn DESC
+        ]]>
+    </query> 
+    
+    <query name="findAllStableGeneralBoxByOfficeBetweenDates">
+        <![CDATA[
+            SELECT 
+                c
+            FROM StableGeneralBox c 
+            WHERE 
+                office = :office AND
+                DATE(createdOn) >= DATE(:startDate) AND 
+                DATE(:endDate) >= DATE(createdOn)
+            ORDER BY createdOn DESC
+        ]]>
+    </query> 
+    
+    <query name="updateStableGeneralBoxByStatus">
+        <![CDATA[
+            UPDATE StableGeneralBox
+            SET 
+                activeStatus = :activeStatus,
+                lastUpdatedBy = :lastUpdatedBy,
+                lastUpdatedOn = :lastUpdatedOn
+            WHERE id = :id
+        ]]>
+    </query>
+    
+    <query name="countStableGeneralBoxByOfficeAndDate">
+        <![CDATA[
+            SELECT 
+                COUNT(id) 
+            FROM 
+                StableGeneralBox 
+            WHERE
+                office = :office AND 
+                activeStatus = 'ENEBLED' AND 
+                DATE(createdOn) = :createdOn
+        ]]>
+    </query>
+    
+    <query name="verifyStableGeneralBoxCreatedByOffice">
+        <![CDATA[
+            SELECT 
+                MAX(Date(createdOn)) 
+            FROM 
+                StableGeneralBox 
+            WHERE
+                office = :office AND 
+                activeStatus = 'ENEBLED'
+        ]]>
+    </query>
+    
+    <query name="verifyClosingDayCreatedByOffice">
+        <![CDATA[
+            SELECT 
+                MAX(Date(createdOn)) 
+            FROM 
+                ClosingDay 
+            WHERE
+                office = :office AND 
+                activeStatus = 'ENEBLED'
+        ]]>
+    </query>
+    
+</hibernate-mapping>

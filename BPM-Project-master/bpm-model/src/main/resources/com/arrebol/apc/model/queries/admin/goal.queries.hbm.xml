@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"https://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    
+    <query name="findAllGoalsByOffice">
+        <![CDATA[
+            SELECT 
+                g
+            FROM Goal g 
+                WHERE office = :office
+                AND activeStatus = :activeStatus
+            ORDER BY createdOn
+        ]]>
+    </query> 
+    
+    <query name="findAllGoalsByOfficeBetweenDates">
+        <![CDATA[
+            SELECT 
+                g
+            FROM Goal g 
+                WHERE 
+                    office = :office AND
+                    activeStatus = :activeStatus AND
+                    DATE(createdOn) >= DATE(:startDate) AND 
+                    DATE(:endDate) >= DATE(createdOn)
+            ORDER BY createdOn
+        ]]>
+    </query> 
+    
+    <query name="updateGoalByStatus">
+        <![CDATA[
+            UPDATE Goal
+            SET 
+                activeStatus = :activeStatus,
+                lastUpdatedBy = :lastUpdatedBy,
+                lastUpdatedOn = :lastUpdatedOn
+            WHERE id = :id
+        ]]>
+    </query>
+    
+</hibernate-mapping>

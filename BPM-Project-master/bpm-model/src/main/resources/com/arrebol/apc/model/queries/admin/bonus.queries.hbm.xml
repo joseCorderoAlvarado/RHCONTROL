@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"https://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    
+    <query name="findAllActiveBonus">
+        <![CDATA[
+            SELECT 
+                b.id AS id,
+                b.name AS name
+            FROM 
+                Bonus b
+            WHERE 
+                b.activeStatus = :activeStatus AND
+                b.office = :office
+        ]]>
+    </query>
+    
+    <query name="findAllBonus">
+        <![CDATA[
+            SELECT 
+                b
+            FROM 
+                Bonus b
+            WHERE 
+                b.activeStatus = :activeStatus AND
+                b.office = :office
+        ]]>
+    </query>
+    
+    <query name="findAllBonusBetweenDates">
+        <![CDATA[
+            SELECT 
+                b
+            FROM 
+                Bonus b
+            WHERE 
+                b.activeStatus = :activeStatus AND
+                b.office = :office AND
+                DATE(b.createdOn) >= DATE(:startDate) AND 
+                DATE(:endDate) >= DATE(b.createdOn)
+            ORDER BY b.createdOn
+        ]]>
+    </query>
+    
+    <query name="updateBonusByStatus">
+        <![CDATA[
+            UPDATE Bonus
+            SET 
+                activeStatus = :activeStatus,
+                lastUpdatedBy = :lastUpdatedBy,
+                lastUpdatedOn = :lastUpdatedOn
+            WHERE id = :id
+        ]]>
+    </query>
+    
+</hibernate-mapping>

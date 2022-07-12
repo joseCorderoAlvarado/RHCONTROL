@@ -1,0 +1,90 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+    <ui:define name="title">#{i18n['project.short.name']} - #{permission['catalog.route']}</ui:define>
+    <ui:define name="head">
+        <h:outputScript library="js" name="scriptGeneric/dialogGeneric.js" />
+    </ui:define>
+    <ui:define name="breadcrumb">
+        <li>#{i18n['catalog.title']}</li>
+        <li>/</li>
+        <li><p:link outcome="#{i18n['outcome.catalog.route']}">#{permission['catalog.route']}</p:link></li>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="ui-g">
+            <div class="ui-g-12">
+                <div class="card card-w-title">
+                    <h1>#{i18n['catalog.route']}</h1>
+                    <h:form id="form" rendered="#{loginBean.isUserInRole('catalog.route')}">
+                        <p:growl id="msgs" showDetail="true"/>
+
+                        <p:dataTable widgetVar="dtRoute" id="dtRoute" var="route" draggableRows="true" draggableColumns="true" value="#{routeManager.route}" style="margin-bottom:20px" reflow="true" rowsPerPageTemplate="5,10,25,50,100" emptyMessage="#{i18n['catalog.routes.datatable.empty']}"
+                                     rowKey="#{route.id}" selection="#{routeManager.selectedRoute}" editable="true" selectionMode="single" paginator="true" rows="10" paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
+
+                            <f:facet name="header">
+                                <p:commandButton id="toggler" type="button" value="Columnas" style="float:left;" styleClass="amber-btn flat" icon="ui-icon-calendar"/>
+                                <p:columnToggler datasource="dtRoute" trigger="toggler" />
+                                <p:commandButton type="button" value="#{i18n['button.add']}" styleClass="amber-btn flat" style="float: right;" icon="ui-icon-plus" onclick="PF('dlg2').show();" rendered="#{loginBean.isUserInRole('catalog.route.add')}"/>
+
+                                <p:outputPanel>
+                                    <h:outputText value="#{i18n['general.search']}: " />
+                                    <p:inputText id="globalFilter" onkeyup="PF('dtRoute').filter()" style="width:150px;color: #000000;"/>
+                                </p:outputPanel>
+                            </f:facet>
+
+                            <p:ajax event="rowEdit" listener="#{routeManager.editRow}" update=":form:msgs" />
+                            <p:ajax event="rowEditCancel" listener="#{routeManager.onRowCancel}" update=":form:msgs" />
+                            <p:ajax event="rowReorder" listener="#{routeManager.onRowReorder}" update=":form:msgs" />
+
+                            <p:column headerText="#{i18n['catalog.routes.datatable.column.name']}" sortBy="#{route.route}" filterBy="#{route.route}">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{route.route}" /></f:facet>
+                                    <f:facet name="input"><p:inputText id="modelInput" value="#{route.route}" required="true" requiredMessage="Valor Obligatorio" style="width:100%; color: #000000;"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column style="width:40px" headerText="Editar">
+
+                                <p:rowEditor editTitle="#{i18n['button.edit']}" rendered="#{loginBean.isUserInRole('catalog.route.updated')}"/>
+
+                            </p:column>
+
+                        </p:dataTable>
+
+                        <p:contextMenu for="dtRoute" rendered="#{loginBean.isUserInRole('catalog.route.deleted')}">
+                            <p:menuitem value="Borrar" update="dtRoute,:form:msgs" icon="ui-icon-close" actionListener="#{routeManager.deleteRow}">
+                                <p:confirm message="#{i18n['general.confirm.confirm']}"  />
+                            </p:menuitem>
+                        </p:contextMenu>
+                        
+                        <p:confirmDialog header="Confirmación" global="true" showEffect="fade" hideEffect="fade">
+                            <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+                        </p:confirmDialog> 
+                    </h:form>
+                </div>
+            </div>
+            <h:form id="routeForm">
+                <p:growl id="msgsDialog" showDetail="true"/>
+                <p:dialog  widgetVar="dlg2" width="30%" id="routeDialog" header="#{i18n['catalog.routes.dialog.title']}" modal="true" responsive="true" showEffect="clip" hideEffect="clip">
+                    <br></br>
+                    <h:panelGroup styleClass="md-inputfield" >
+                        <p:inputText id="name" value="#{routeManager.name}" autocomplete="off" required="true" requiredMessage="#{i18n['catalog.routes.dialog.require.msg.color.empty']}" style="width: 100%;">
+                        </p:inputText>
+                        <label>#{i18n['catalog.routes.datatable.column.name']}</label>
+                        <p:message for="name" display="text"/>
+                    </h:panelGroup>
+                    <br></br>
+                    <div class="ui-g-12">
+                        <p:commandButton id="addButton" value="#{i18n['button.save']}"  actionListener="#{routeManager.addRow}" oncomplete="validNewObjectGeneric(xhr, status, args)" update=":form:dtRoute,msgsDialog,routeDialog"/>
+                    </div>
+                </p:dialog>
+            </h:form>
+        </div>
+    </ui:define>
+
+</ui:composition>

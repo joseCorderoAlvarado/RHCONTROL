@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<faces-config version="2.0" xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+    <application>
+        <!-- Internalization -->
+        <!-- nManage diferent lenguage -->
+        <!--	
+        <locale-config>
+            <default-locale>es</default-locale>
+            <supported-locale>en</supported-locale>
+            <supported-locale>es</supported-locale>
+        </locale-config>
+        -->
+        <resource-bundle>
+            <base-name>com.arrebol.apc.i18n.app</base-name>
+            <var>i18n</var>
+        </resource-bundle>
+        <resource-bundle>
+            <base-name>com.arrebol.apc.i18n.app_permission</base-name>
+            <var>permission</var>
+        </resource-bundle>
+        <!--
+            Update the javax.faces message properties to custom message
+         and create message to use in Custom validators.
+        -->
+        <message-bundle>
+            com.arrebol.apc.i18n.app_background
+        </message-bundle>
+    </application>
+    
+    <name>taxiservicios</name>
+    
+    <component>
+        <component-type>org.primefaces.component.SerenityMenu</component-type>
+        <component-class>org.primefaces.serenity.component.SerenityMenu</component-class>
+    </component>
+    
+    <render-kit>
+        <renderer>
+            <component-family>org.primefaces.component</component-family>
+            <renderer-type>org.primefaces.component.SerenityMenuRenderer</renderer-type>
+            <renderer-class>org.primefaces.serenity.component.SerenityMenuRenderer</renderer-class>
+        </renderer>
+    </render-kit>
+</faces-config>

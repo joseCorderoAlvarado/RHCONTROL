@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"https://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    
+    <query name="finPermissionThatUserHasAssigned">
+        <![CDATA[
+            SELECT 
+                p
+            FROM Permission p
+                INNER JOIN UserByOfficeHasPermission ubohp ON p.id = ubohp.permission
+                INNER JOIN UserByOffice ubo ON ubohp.userByOffice = ubo.id
+                INNER JOIN User u ON ubo.user = u.id
+                INNER JOIN Office o ON ubo.office = o.id
+                INNER JOIN HumanResource hr ON u.humanResource = hr.id
+            WHERE
+                ubohp.userByOffice = :userByOffice AND
+                ubo.userByOfficeStatus = 'ENEBLED' AND
+                u.userStatus = 'ENEBLED' AND
+                hr.humanResourceStatus = 'ENEBLED' AND
+                p.permissionType = 'PRIVATE' AND
+                p.permissionStatus = 'ENEBLED'
+        ]]>
+    </query>
+    
+    <query name="findMissingPermissionByUserByOffice">
+        <![CDATA[
+            SELECT p
+            FROM Permission p
+            WHERE 
+                p.permissionType = 'PRIVATE' AND
+                p.permissionStatus = 'ENEBLED' AND
+                p.id NOT IN (
+                    SELECT p.id 
+                    FROM Permission p
+                    LEFT JOIN UserByOfficeHasPermission ubohp ON p.id = ubohp.permission
+                    WHERE
+                        ubohp.userByOffice = :userByOffice AND
+                        p.permissionType = 'PRIVATE'
+                )
+        ]]>
+    </query>
+    
+    <query name="findAllEnebledPermissions">
+        <![CDATA[
+            SELECT p
+            FROM Permission p
+            WHERE 
+                p.permissionType = 'PRIVATE' AND
+                p.permissionStatus = 'ENEBLED'
+        ]]>
+    </query>
+    
+    <query name="findPermissionByTypeAndStatus">
+        <![CDATA[
+            SELECT p
+            FROM Permission p
+            WHERE 
+                p.permissionType in :permissionType AND
+                p.permissionStatus = :permissionStatus
+        ]]>
+    </query>
+    
+    <query name="findAllPermissionByTypeAndStatus">
+        <![CDATA[
+            SELECT 
+                p.id AS id, 
+                p.permission AS permission, 
+                p.description AS description, 
+                p.menuPath AS menuPath
+            FROM Permission p
+            WHERE 
+                p.permissionType in :permissionType AND
+                p.permissionStatus = :permissionStatus
+        ]]>
+    </query>
+    
+    <query name="findAllPermissionsByUBO">
+        <![CDATA[
+            SELECT 
+                p.id AS id, 
+                p.permission AS permission, 
+                p.description AS description, 
+                p.menuPath AS menuPath
+            FROM 
+                Permission p
+                INNER JOIN UserByOfficeHasPermission ubohp
+                ON p.id = ubohp.permission
+            WHERE 
+                ubohp.userByOffice = :userByOffice AND 
+                p.permissionType = 'PRIVATE'
+            ORDER BY p.leftToRightOrder, p.topToBottomOrder            
+        ]]>
+    </query>
+    
+    <query name="findAllNotPermissionsByUBO">
+        <![CDATA[
+            SELECT 
+                p.id AS id, 
+                p.permission AS permission, 
+                p.description AS description, 
+                p.menuPath AS menuPath
+            FROM 
+                Permission p
+            WHERE 
+                p.id NOT IN(
+                    SELECT 
+                        ubohp.permission
+                    FROM 
+                        UserByOfficeHasPermission ubohp
+                    WHERE 
+                        ubohp.userByOffice = :userByOffice
+                ) AND 
+                p.permissionType = 'PRIVATE' AND
+                p.permissionStatus = 'ENEBLED'
+            ORDER BY p.leftToRightOrder, p.topToBottomOrder            
+        ]]>
+    </query>
+    
+</hibernate-mapping>

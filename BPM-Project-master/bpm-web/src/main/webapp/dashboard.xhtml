@@ -1,0 +1,50 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+    <ui:define name="head">
+        <h:outputScript library="js" name="scriptGeneric/dialogGeneric.js" />
+    </ui:define>
+    <ui:define name="breadcrumb">
+        <li><p:link outcome="#{i18n['outcome.dashboard']}">#{i18n['dashboard.title']}</p:link></li>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="ui-g">
+            <div class="ui-g-12">
+                <h:form id="dashboardResumen">
+                    <p:growl id="msgs" showDetail="true"/>
+                    
+                    <style type="text/css">
+                        .redRow {
+                            background-color: #ff0000 !important;
+                            background-image: none !important;
+                            color: #000000 !important;
+                        }
+                        .yellowRow {
+                            background-color: #ffff00 !important;
+                            background-image: none !important;
+                            color: #000000 !important;
+                        }
+                    </style>
+                    
+                    <div class="ui-g-6">
+                        <div class="card">
+                            <h4>Dashboard sección 1</h4>
+                        </div>
+                    </div>
+                    <div class="ui-g-6">
+                        <div class="card">
+                            <h4>Dashboard sección 2</h4>
+                        </div>
+                    </div>
+
+
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

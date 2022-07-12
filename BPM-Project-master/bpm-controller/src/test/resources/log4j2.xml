@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MMM-dd hh:mm:ss a } %level %c - %m %n" />
+        </Console>
+        <JDBC name="MySQLDatabase" tableName="APC_ERROR_APP_LOG">
+            <LevelRangeFilter minLevel="ERROR" maxLevel="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <ConnectionFactory
+                class="com.arrebol.apc.controller.util.logger.LogConnectionFactory" method="getConnection" />
+            <Column name="id_log" pattern="%u" />
+            <Column name="log_entry_date" isEventTimestamp="true" />
+            <Column name="log_logger" pattern="%logger" />
+            <Column name="log_level" pattern="%level" />
+            <Column name="log_message" pattern="%m" />
+            <Column name="log_exception" pattern="%throwable" />
+        </JDBC>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.arrebol.apc.controller.login" level="DEBUG"
+                additivity="false">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="MySQLDatabase" />
+        </Logger>
+        
+        <Logger name="com.arrebol.apc.controller.topbar" level="DEBUG"
+                additivity="false">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="MySQLDatabase" />
+        </Logger>
+        
+        <Logger name="com.arrebol.apc.controller.system" level="DEBUG"
+                additivity="false">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="MySQLDatabase" />
+        </Logger>
+        
+        <Logger name="com.arrebol.apc.repository.core" level="DEBUG"
+                additivity="false">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="MySQLDatabase" />
+        </Logger>
+
+        <Root level="INFO">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="MySQLDatabase" />
+        </Root>
+    </Loggers>
+
+</Configuration>

@@ -1,0 +1,175 @@
+Path web
+cd /Users/Picasso/Documents/workspace/arrebol/ApoyoProyectosComerciales/apc-web/
+
+SASS command
+sass --update src/main/webapp/resources:src/main/webapp/resources --no-source-map
+
+http://pdqcoders.com/font-based-icons.html
+Font: Google Material Icons
+-- prueba commit
+
+#
+# Here, or in other properties files in this directory, you can define
+# various properties that you want to make available to the template
+# processor while creating various templates.
+# Lo!Hx?w90$
+# D35aRr0Yad0R
+# R1n0c3R0nT3=
+# R1n0c3R0nT3=
+
+# uncomment the next line and specify your user name to be used in new templates
+#user=Your Name (AlphaCJZL) <your.name at your.org>
+user=Carlos Janitzio Zavala Lopez <janitzio.zavala@arrebol.com.mx>
+
+
+
+<#if licenseFirst??>
+${licenseFirst}
+</#if>
+${licensePrefix}Arrebol Consultancy copyright.
+${licensePrefix}
+${licensePrefix}This code belongs to Arrebol Consultancy
+${licensePrefix}its use, redistribution or modification are prohibited 
+${licensePrefix}without written authorization from Arrebol Consultancy.
+<#if licenseLast??>
+${licenseLast}
+</#if>
+
+
+search/payment-details?user=83d2cd30-8e1d-11ea-b65e-4e1376171215&personSearch=67b3081e-8bc9-11ea-b45c-c7b846343364
+
+Cambios para abono con transferencia bancaria.
+alter table
+web services y web deberan ser desplegados en prod.
+
+
+-- EJECUTIVO 5751074e-7d1b-11ea-af3e-28f659da398e
+-- recursos.humanos 564f976d-e869-11ea-b7e1-02907d0fb4e6
+-- gerencia 42e99ff0-e59c-11ea-b7e1-02907d0fb4e6
+
+
+INSERT INTO `APC_PERMISSION` 
+(`id`, `permission`, `description`, `menu_path`, `left_to_right_order`, `top_to_bottom_order` ,
+ `permission_type`, `permission_status`,`created_by`, `parent_name`) 
+VALUES 
+('073fba18-2a8e-11eb-9de2-a30e5a9c0028','admin.loan.change.owner', 'admin.loan.change.owner.description', 'admin.loan.change.owner.path', 10, 110,'PRIVATE', 'ENEBLED', '0dc7c246-7db8-11ea-9b1f-500320958bf8','admin.loan'),
+('50942348-2a8e-11eb-9de2-a30e5a9c0028','admin.loan.change.owner.update', 'admin.loan.change.owner.update.description', 'admin.loan.change.owner.update.path', 10, 111,'PRIVATE', 'ENEBLED', '0dc7c246-7db8-11ea-9b1f-500320958bf8','admin.loan');
+
+INSERT INTO `APC_USER_BY_OFFICE_HAS_PERMISSION` 
+(`id_user_by_office`,`id_permission`,`created_by`,`created_on`)
+VALUES
+('bbb978f3-e59c-11ea-b7e1-02907d0fb4e6','073fba18-2a8e-11eb-9de2-a30e5a9c0028','42e99ff0-e59c-11ea-b7e1-02907d0fb4e6',NOW()),
+('bbb978f3-e59c-11ea-b7e1-02907d0fb4e6','50942348-2a8e-11eb-9de2-a30e5a9c0028','42e99ff0-e59c-11ea-b7e1-02907d0fb4e6',NOW()),
+('894b4e5c-e869-11ea-b7e1-02907d0fb4e6','073fba18-2a8e-11eb-9de2-a30e5a9c0028','42e99ff0-e59c-11ea-b7e1-02907d0fb4e6',NOW()),
+('894b4e5c-e869-11ea-b7e1-02907d0fb4e6','50942348-2a8e-11eb-9de2-a30e5a9c0028','42e99ff0-e59c-11ea-b7e1-02907d0fb4e6',NOW()),
+('a742dfe8-7d20-11ea-af3e-28f659da398e','073fba18-2a8e-11eb-9de2-a30e5a9c0028','42e99ff0-e59c-11ea-b7e1-02907d0fb4e6',NOW()),
+('a742dfe8-7d20-11ea-af3e-28f659da398e','50942348-2a8e-11eb-9de2-a30e5a9c0028','42e99ff0-e59c-11ea-b7e1-02907d0fb4e6',NOW()),;
+COMMIT;
+-- --------------------------------------------------------------------
+-- 
+-- Estructura para la vista `APC_CURRENT_CUSTOMER_BY_LOAN_VIEW`
+-- SIRVE PARA TRAER LOS PRESTAMOS CON SUS CLIENTES, AVALES Y ASESORES.
+-- 
+-- --------------------------------------------------------------------
+CREATE OR REPLACE VIEW `APC_CURRENT_CUSTOMER_BY_LOAN_VIEW` AS
+SELECT 
+loan.id AS id_loan,
+usr.id AS id_user,
+usr_by_office.id_office AS id_office,
+loan_type.payment AS payment,
+CONCAT(
+		CASE
+			WHEN customer.first_name IS NOT NULL AND customer.first_name != ''
+			THEN CONCAT(SUBSTR(UPPER(customer.first_name), 1, 1),SUBSTR(LOWER(customer.first_name), 2))
+			ELSE ''
+		END,
+        CASE
+			WHEN customer.second_name IS NOT NULL AND customer.second_name != ''
+			THEN CONCAT(' ',SUBSTR(UPPER(customer.second_name), 1, 1),SUBSTR(LOWER(customer.second_name), 2))
+			ELSE ''
+		END,
+        CASE
+			WHEN customer.last_name IS NOT NULL AND customer.last_name != ''
+			THEN CONCAT(' ',SUBSTR(UPPER(customer.last_name), 1, 1),SUBSTR(LOWER(customer.last_name), 2))
+			ELSE ''
+		END,
+        CASE
+			WHEN customer.middle_name IS NOT NULL AND customer.middle_name != ''
+			THEN CONCAT(' ',SUBSTR(UPPER(customer.middle_name), 1, 1),SUBSTR(LOWER(customer.middle_name), 2))
+			ELSE ''
+		END
+    ) AS customer_name,
+    CONCAT(
+		CASE
+			WHEN endorsement.first_name IS NOT NULL AND endorsement.first_name != ''
+			THEN CONCAT(SUBSTR(UPPER(endorsement.first_name), 1, 1),SUBSTR(LOWER(endorsement.first_name), 2))
+			ELSE ''
+		END,
+        CASE
+			WHEN endorsement.second_name IS NOT NULL AND endorsement.second_name != ''
+			THEN CONCAT(' ',SUBSTR(UPPER(endorsement.second_name), 1, 1),SUBSTR(LOWER(endorsement.second_name), 2))
+			ELSE ''
+		END,
+        CASE
+			WHEN endorsement.last_name IS NOT NULL AND endorsement.last_name != ''
+			THEN CONCAT(' ',SUBSTR(UPPER(endorsement.last_name), 1, 1),SUBSTR(LOWER(endorsement.last_name), 2))
+			ELSE ''
+		END,
+        CASE
+			WHEN endorsement.middle_name IS NOT NULL AND endorsement.middle_name != ''
+			THEN CONCAT(' ',SUBSTR(UPPER(endorsement.middle_name), 1, 1),SUBSTR(LOWER(endorsement.middle_name), 2))
+			ELSE ''
+		END
+    ) AS endorsement_name,
+    loan.loan_status AS loan_status,
+    loan.created_on AS created_on,
+    route.route_name AS route_name
+FROM APC_LOAN loan
+INNER JOIN APC_PEOPLE customer ON loan.id_customer = customer.id
+INNER JOIN APC_PEOPLE endorsement ON loan.id_endorsement = endorsement.id
+INNER JOIN APC_LOAN_TYPE loan_type ON loan.id_loan_type = loan_type.id
+INNER JOIN APC_LOAN_BY_USER loan_by_user ON loan.id = loan_by_user.id_loan
+INNER JOIN APC_USER usr ON loan_by_user.id_user = usr.id
+INNER JOIN APC_USER_BY_OFFICE usr_by_office ON usr.id = usr_by_office.id_user
+INNER JOIN APC_ROUTE route ON loan.id_route = route.id
+WHERE loan.loan_status IN('APPROVED','PENDING','PENDING_RENOVATION','TO_DELIVERY')
+ORDER BY usr.id, loan.created_on;
+-- --------------------------------------------------------------------
+-- 
+-- Estructura para la vista `APC_AVAILABLES_OWNERS_VIEW`
+-- REGRESA LOS USUARIOS ACTIVOS DE TIPO MOBILE AND BOTH.
+-- 
+-- --------------------------------------------------------------------
+CREATE OR REPLACE VIEW `APC_AVAILABLES_OWNERS_VIEW` AS
+SELECT 
+usr.id AS id_user,
+usr_by_office.id_office AS id_office,
+usr.user_name AS user_name,
+CONCAT(
+		CASE
+			WHEN human_resource.first_name IS NOT NULL AND human_resource.first_name != ''
+			THEN CONCAT(SUBSTR(UPPER(human_resource.first_name), 1, 1),SUBSTR(LOWER(human_resource.first_name), 2))
+			ELSE ''
+		END,
+        CASE
+			WHEN human_resource.second_name IS NOT NULL AND human_resource.second_name != ''
+			THEN CONCAT(' ',SUBSTR(UPPER(human_resource.second_name), 1, 1),SUBSTR(LOWER(human_resource.second_name), 2))
+			ELSE ''
+		END,
+        CASE
+			WHEN human_resource.last_name IS NOT NULL AND human_resource.last_name != ''
+			THEN CONCAT(' ',SUBSTR(UPPER(human_resource.last_name), 1, 1),SUBSTR(LOWER(human_resource.last_name), 2))
+			ELSE ''
+		END,
+        CASE
+			WHEN human_resource.middle_name IS NOT NULL AND human_resource.middle_name != ''
+			THEN CONCAT(' ',SUBSTR(UPPER(human_resource.middle_name), 1, 1),SUBSTR(LOWER(human_resource.middle_name), 2))
+			ELSE ''
+		END
+    ) AS full_name
+FROM APC_USER usr
+INNER JOIN APC_HUMAN_RESOURCE human_resource ON usr.id_human_resource = human_resource.id
+INNER JOIN APC_USER_BY_OFFICE usr_by_office ON usr.id = usr_by_office.id_user
+WHERE usr.user_status = 'ENEBLED' AND
+usr.user_type IN ('MOBILE','BOTH') AND
+usr.certifier = 'DISABLED';

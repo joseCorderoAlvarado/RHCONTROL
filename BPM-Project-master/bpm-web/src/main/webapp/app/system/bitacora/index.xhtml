@@ -1,0 +1,104 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+    <ui:define name="title">#{i18n['project.short.name']} - Bitácora}</ui:define>
+    <ui:define name="head">
+        <h:outputScript library="js" name="scriptGeneric/dialogGeneric.js" />
+        <h:outputScript library="serenity-layout" name="js/calendar_es.js" />
+    </ui:define>
+    <ui:define name="breadcrumb">
+        <li>#{i18n['system.title']}</li>
+        <li>/</li>
+        <li><p:link outcome="#{i18n['outcome.system.bitacora']}">Bitácora</p:link></li>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="ui-g">
+            <div class="ui-g-12">
+                <div class="card card-w-title">
+                    <h1>#{i18n['system.bitacora']}</h1>
+                    <h:form id="form">
+                        <p:growl id="msgs" showDetail="true"/>
+                        
+                        <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="startDateSearchHistorical" styleClass="md-inputfield">
+                                <p:calendar showOn="button"
+                                            id="startDateSearchCalendar"
+                                            style="text-transform: capitalize;"
+                                            readonlyInput="true"
+                                            value="#{bitacoraManager.starDate}"
+                                            locale="es"
+                                            navigator="true" 
+                                            pattern="#{i18n['pattern.date']}"/>
+                                <label>Fecha inicial</label>
+                            </h:panelGroup>
+
+                            <h:panelGroup id="endDateSearchHistorical" styleClass="md-inputfield">
+                                <p:calendar showOn="button"
+                                            id="endDateSearchCalendar"
+                                            style="text-transform: capitalize;"
+                                            readonlyInput="true"
+                                            value="#{bitacoraManager.endDate}"
+                                            locale="es" yearRange="-25:+1" 
+                                            navigator="true" 
+                                            pattern="#{i18n['pattern.date']}"/>
+                                <label>Fecha final</label>
+                            </h:panelGroup>
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:commandButton value="#{i18n['general.search']}"
+                                                 action="#{bitacoraManager.searchHistoricalAction()}" 
+                                                 update="msgs, dtBitacora"/>
+                            </h:panelGroup>
+                            <h:panelGroup styleClass="md-inputfield" style="float: right;">
+                                <p:commandButton value="#{i18n['general.search']} todo"
+                                                 action="#{bitacoraManager.searchAllAction()}" 
+                                                 update="msgs, dtBitacora"/>
+                            </h:panelGroup>
+                        </p:panelGrid>
+                        <p:dataTable widgetVar="dtBitacora" id="dtBitacora" var="bitacora" draggableRows="true" draggableColumns="true" value="#{bitacoraManager.bitacora}" style="margin-bottom:20px" reflow="true" rowsPerPageTemplate="5,10,25,50,100" emptyMessage="#{i18n['system.bitacoras.datatable.empty']}"
+                                     rowKey="#{bitacora.id}" selection="#{bitacoraManager.selectedBitacora}" editable="true" selectionMode="single" paginator="true" rows="10" paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
+
+                            <f:facet name="header">
+                                <p:commandButton id="toggler" type="button" value="Columnas" style="float:left;" styleClass="amber-btn flat" icon="ui-icon-calendar"/>
+                                <p:columnToggler datasource="dtBitacora" trigger="toggler" />
+                                <p:commandButton type="button" value="#{i18n['button.add']}" styleClass="amber-btn flat" style="float: right;" icon="ui-icon-plus" onclick="PF('dlg2').show();" rendered="#{loginBean.isUserInRole('admin.bitacora.add')}"/>
+
+                                <p:outputPanel>
+                                    <h:outputText value="#{i18n['general.search']}: " />
+                                    <p:inputText id="globalFilter" onkeyup="PF('dtBitacora').filter()" style="width:150px;color: #000000;"/>
+                                </p:outputPanel>
+                            </f:facet>
+
+                            <p:ajax event="rowReorder" listener="#{bitacoraManager.onRowReorder}" update=":form:msgs" />
+
+                            <p:column headerText="#{i18n['system.bitacoras.datatable.column.action']}" sortBy="#{bitacora.action}" filterBy="#{bitacora.action}">
+                                <h:outputText value="#{bitacora.action}" />
+                            </p:column>
+                            <p:column headerText="#{i18n['system.bitacoras.datatable.column.description']}" sortBy="#{bitacora.description}" filterBy="#{bitacora.description}">
+                                <h:outputText value="#{bitacora.description}" />
+                            </p:column>
+                            <p:column headerText="#{i18n['system.bitacoras.datatable.column.commentsUser']}" sortBy="#{bitacora.commentsUser}" filterBy="#{bitacora.commentsUser}">
+                                <h:outputText value="#{bitacora.commentsUser}">
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="#{i18n['system.bitacoras.datatable.column.user']}" sortBy="#{bitacora.nameUser}" filterBy="#{bitacora.nameUser}">
+                                <h:outputText value="#{bitacora.nameUser}" />
+                            </p:column>
+                            <p:column headerText="#{i18n['system.bitacoras.datatable.column.createdOn']}" sortBy="#{bitacora.createdOn}" filterBy="#{bitacora.createdOn}">
+                                <h:outputText value="#{bitacora.createdOn}">
+                                    <f:convertDateTime type="date" locale="es" timeZone="GMT-6" pattern="dd - MMMM - yyyy hh:mm:ss"/>
+                                </h:outputText>
+                            </p:column>
+                        </p:dataTable>
+
+                    </h:form>
+                </div>
+            </div>
+
+        </div>
+    </ui:define>
+
+</ui:composition>

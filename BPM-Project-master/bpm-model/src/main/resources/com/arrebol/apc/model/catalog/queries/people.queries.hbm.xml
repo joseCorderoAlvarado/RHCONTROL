@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"https://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    
+    <query name="updateByPeopleId">
+        <![CDATA[
+            UPDATE People
+            SET 
+                activeStatus = :activeStatus,
+                lastUpdatedBy = :lastUpdatedBy,
+                lastUpdatedOn = :lastUpdatedOn
+            WHERE
+                id = :id
+        ]]>
+    </query>
+    
+    <query name="updateTypeByPeopleId">
+        <![CDATA[
+            UPDATE People
+            SET 
+                peopleType = :peopleType,
+                lastUpdatedBy = :lastUpdatedBy,
+                lastUpdatedOn = :lastUpdatedOn
+            WHERE
+                id = :id
+        ]]>
+    </query>
+    
+    <query name="updateByPeopleClassification">
+        <![CDATA[
+            UPDATE People
+            SET 
+                classification = :classification,
+                lastUpdatedBy = :lastUpdatedBy,
+                lastUpdatedOn = :lastUpdatedOn
+            WHERE
+                id = :id
+        ]]>
+    </query>
+    
+    <query name="findAllCustomerPeople">
+        <![CDATA[
+            SELECT 
+                p
+            FROM People p
+            WHERE
+                    activeStatus = :activeStatus
+                AND 
+                    peopleType IN ('CUSTOMER','BOTH')
+            ORDER BY firstName, secondName, lastName, middleName
+        ]]>
+    </query>
+    
+    <query name="findAllEndorsementPeople">
+        <![CDATA[
+            SELECT 
+                p
+            FROM People p
+            WHERE
+                    activeStatus = :activeStatus
+                AND 
+                    peopleType IN ('ENDORSEMENT','BOTH')
+        ]]>
+    </query>
+    
+    <query name="findPeopleById">
+        <![CDATA[
+            SELECT 
+                p
+            FROM People p
+            WHERE
+                 id = :id
+        ]]>
+    </query>
+    
+    <query name="updateRouteByPeopleId">
+        <![CDATA[
+            UPDATE People
+            SET 
+                routeCtlg = :routeCtlg,
+                lastUpdatedBy = :lastUpdatedBy,
+                lastUpdatedOn = :lastUpdatedOn
+            WHERE
+                id = :id
+        ]]>
+    </query>
+    
+    <query name="updatePhoneHomeByPeopleId">
+        <![CDATA[
+            UPDATE People
+            SET 
+                phoneHome = :phoneHome,
+                lastUpdatedBy = :lastUpdatedBy,
+                lastUpdatedOn = :lastUpdatedOn
+            WHERE
+                id = :id
+        ]]>
+    </query>
+    
+</hibernate-mapping>

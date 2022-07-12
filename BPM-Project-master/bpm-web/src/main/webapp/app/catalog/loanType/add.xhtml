@@ -1,0 +1,195 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                template="/WEB-INF/template.xhtml">
+    <ui:define name="head">
+        <h:outputScript library="serenity-layout" name="js/calendar_es.js" />
+    </ui:define>
+
+    <ui:define name="title">#{i18n['project.short.name']} - #{permission['catalog.typeLoan.add']}</ui:define>
+
+    <ui:define name="breadcrumb">
+        <li>#{i18n['catalog.title']}</li>
+        <li>/</li>
+        <li><p:link outcome="#{i18n['outcome.catalog.typeLoan']}">#{permission['catalog.typeLoan']}</p:link></li>
+        <li>/</li>
+        <li><p:link outcome="#{i18n['outcome.catalog.typeLoan.add']}">#{permission['catalog.typeLoan.add']}</p:link></li>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="ui-g ui-fluid">
+            <div class="ui-g-12">
+                 <div class="ui-g-3"></div>
+                <!-- Top center -->
+                <div class="ui-g-6" style="display: #{loginBean.isUserInRole('catalog.typeLoan.add') ? 'block' : 'none'}">
+                    <div class="card card-w-title">
+                        <h:form rendered="#{loginBean.isUserInRole('catalog.typeLoan.add')}"
+                                id="createHRForm">
+                            <p:messages id="messages" severity="info, fatal, warn" closable="true" showSummary="true" showDetail="true"/>
+                            <!-- TITLE for this FORM-->
+
+                            <h4>#{permission['catalog.typeLoan.add']}</h4>
+
+                            <!-- CONTENT for this FORM-->
+                            <p:panelGrid columns="3" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                                <h:panelGroup id="loanTypeNamePnlGrp" styleClass="md-inputfield">
+                                    <p:inputText id="loanTypeName" 
+                                                 style="width: 100%"
+                                                 value="#{loanTypeManager.saveLoanType.loanTypeName}"
+                                                 autocomplete="off"
+                                                 required="true"
+                                                 requiredMessage="#{i18n['catalog.loanTypes.dialog.name.require.msg.empty']}">
+                                    </p:inputText>
+                                    <label>#{i18n['catalog.loanTypes.dialog.name.title']}</label>
+                                    <p:message for="loanTypeName" display="icon"/>
+                                </h:panelGroup>
+                                <h:panelGroup id="totalDaysPnlGrp" styleClass="md-inputfield">
+                                    <p:inputText id="totalDays" 
+                                                 style="width: 100%" 
+                                                 value="#{loanTypeManager.saveLoanType.totalDays}"
+                                                 autocomplete="off" 
+                                                 required="true"
+                                                 requiredMessage="#{i18n['catalog.loanTypes.dialog.totalDays.require.msg.empty']}"/>
+                                    <label>#{i18n['catalog.loanTypes.dialog.totalDays.title']}</label>
+                                    <p:message for="totalDays" display="icon"/>
+                                </h:panelGroup>
+                                <h:panelGroup id="paymentPnlGrp" styleClass="md-inputfield">
+                                    <p:inputText id="payment" 
+                                                 style="width: 100%" 
+                                                 value="#{loanTypeManager.saveLoanType.payment}"
+                                                 autocomplete="off" 
+                                                 required="true"
+                                                 requiredMessage="#{i18n['catalog.loanTypes.dialog.payment.require.msg.empty']}"/>
+                                    <label>#{i18n['catalog.loanTypes.dialog.payment.title']}</label>
+                                    <p:message for="payment" display="icon"/>
+                                </h:panelGroup>
+
+                            </p:panelGrid>
+
+                            <p:panelGrid columns="3" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                                <h:panelGroup id="feePnlGrp" styleClass="md-inputfield">
+                                    <p:inputText id="fee" 
+                                                 style="width: 100%" 
+                                                 value="#{loanTypeManager.saveLoanType.fee}"
+                                                 autocomplete="off" 
+                                                 required="true"
+                                                 requiredMessage="#{i18n['catalog.loanTypes.dialog.fee.require.msg.empty']}"/>
+                                    <label>#{i18n['catalog.loanTypes.dialog.fee.title']}</label>
+                                    <p:message for="fee" display="icon"/>
+                                </h:panelGroup>
+                                <h:panelGroup id="paymentDailyPnlGrp" styleClass="md-inputfield">
+                                    <p:inputText id="paymentDaily" 
+                                                 style="width: 100%" 
+                                                 value="#{loanTypeManager.saveLoanType.paymentDaily}"
+                                                 autocomplete="off" 
+                                                 required="true"
+                                                 
+                                                 requiredMessage="#{i18n['catalog.loanTypes.dialog.paymentDaily.require.msg.empty']}"/>
+                                    <label>#{i18n['catalog.loanTypes.dialog.paymentDaily.title']}</label>
+                                    <p:message for="paymentDaily" display="icon"/>
+                                </h:panelGroup>
+                                <h:panelGroup id="openingFeePnlGrp" styleClass="md-inputfield">
+                                    <p:inputText id="openingFee" 
+                                                 style="width: 100%" 
+                                                 value="#{loanTypeManager.saveLoanType.openingFee}"
+                                                 autocomplete="off" 
+                                                 required="true"
+                                                 
+                                                 requiredMessage="#{i18n['catalog.loanTypes.dialog.openingFee.require.msg.empty']}"/>
+                                    <label>#{i18n['catalog.loanTypes.dialog.openingFee.title']}</label>
+                                    <p:message for="paymentDaily" display="icon"/>
+                                </h:panelGroup>
+                            </p:panelGrid>
+                            <h4>Convenio</h4>
+                            <p:panelGrid columns="7" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                                <h:panelGroup id="convenioPnlGrp" styleClass="md-inputfield">
+                                    Convenio
+                                    <p:inputSwitch value="#{loanTypeManager.convenio}">
+                                    </p:inputSwitch>
+                                </h:panelGroup>
+                            </p:panelGrid>  
+                            <h4>Días de cobro</h4>
+                            <p:panelGrid columns="7" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                                <h:panelGroup id="mondayPnlGrp" styleClass="md-inputfield">
+                                    #{i18n['catalog.loanTypes.dialog.monday.title']}
+                                    <p:inputSwitch value="#{loanTypeManager.monday}">
+                                    </p:inputSwitch>
+                                </h:panelGroup>
+                                <h:panelGroup id="tuesdayPnlGrp" styleClass="md-inputfield">
+                                    #{i18n['catalog.loanTypes.dialog.tuesday.title']}
+                                    <p:inputSwitch value="#{loanTypeManager.tuesday}">
+                                    </p:inputSwitch>
+                                </h:panelGroup>
+                                <h:panelGroup id="wednesdayPnlGrp" styleClass="md-inputfield">
+                                    #{i18n['catalog.loanTypes.dialog.wednesday.title']}
+                                    <p:inputSwitch value="#{loanTypeManager.wednesday}">
+                                    </p:inputSwitch>
+                                </h:panelGroup>
+                                <h:panelGroup id="thursdayPnlGrp" styleClass="md-inputfield">
+                                    #{i18n['catalog.loanTypes.dialog.thursday.title']}
+                                    <p:inputSwitch value="#{loanTypeManager.thrusday}">
+                                    </p:inputSwitch>
+                                </h:panelGroup>
+                                <h:panelGroup id="fridayPnlGrp" styleClass="md-inputfield">
+                                    #{i18n['catalog.loanTypes.dialog.friday.title']}
+                                    <p:inputSwitch value="#{loanTypeManager.friday}">
+                                    </p:inputSwitch>
+                                </h:panelGroup>
+                                <h:panelGroup id="saturdayPnlGrp" styleClass="md-inputfield">
+                                    #{i18n['catalog.loanTypes.dialog.saturday.title']}
+                                    <p:inputSwitch value="#{loanTypeManager.saturday}">
+                                    </p:inputSwitch>
+                                </h:panelGroup>
+                                <h:panelGroup id="sundayPnlGrp" styleClass="md-inputfield">
+                                    #{i18n['catalog.loanTypes.dialog.sunday.title']}
+                                    <p:inputSwitch value="#{loanTypeManager.sunday}">
+                                    </p:inputSwitch>
+                                </h:panelGroup>
+                            </p:panelGrid>
+
+                            <!-- Button for this FORM -->
+                            <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                                <h:panelGroup styleClass="md-inputfield">
+                                    <p:commandButton value="#{i18n['add']}"
+                                                     update="loanTypeNamePnlGrp 
+                                                     paymentPnlGrp 
+                                                     totalDaysPnlGrp
+                                                     feePnlGrp
+                                                     paymentDaily
+                                                     openingFeePnlGrp
+                                                     mondayPnlGrp
+                                                     tuesdayPnlGrp
+                                                     wednesdayPnlGrp
+                                                     thursdayPnlGrp
+                                                     fridayPnlGrp
+                                                     saturdayPnlGrp
+                                                     sundayPnlGrp
+                                                     confirmForm:globalConfirmMsg
+                                                     messages"
+                                                     action="#{loanTypeManager.addRow()}"
+                                                     rendered="#{loginBean.isUserInRole('catalog.typeLoan.add')}">
+                                        <p:confirm header="#{i18n['general.confirm.header']}" 
+                                                   message="#{i18n['general.confirm.confirm']}" 
+                                                   icon="ui-icon-person"/>
+                                    </p:commandButton>
+                                </h:panelGroup>
+                            </p:panelGrid>
+                        </h:form>
+                    </div>
+                </div>
+                <div class="ui-g-3"></div>
+            </div>
+            <!-- Popup -->
+            <h:form id="confirmForm">
+                <p:confirmDialog id="globalConfirmMsg" global="true" showEffect="clip" hideEffect="clip">
+                    <p:commandButton value="#{i18n['confirm.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="#{i18n['confirm.no']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog> 
+            </h:form>
+        </div>
+    </ui:define>
+
+</ui:composition>

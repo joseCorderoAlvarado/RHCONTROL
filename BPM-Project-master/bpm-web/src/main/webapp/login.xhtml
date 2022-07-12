@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+        </f:facet>
+        <title>#{i18n['project.short.name']}</title>
+        <h:outputScript name="js/layout.js" library="serenity-layout" />
+        <h:outputScript name="js/ripple.js" library="serenity-layout" />
+    </h:head>
+
+    <h:body styleClass="login-body">
+        <div class="login-panel ui-fluid">
+            <div class="login-panel-header">
+                <p:graphicImage name="images/logo_emp.png" library="serenity-layout" />
+            </div>
+            <h:form id="access_form" prependId="false">
+                <div class="login-panel-content">
+                    <div class="ui-g">
+                        <div class="ui-g-12">
+                            <h1 style="font-style: italic">#{i18n['project.complete.name']}</h1>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:selectOneMenu id="office"
+                                                 validator="selectOneMenuValidator"
+                                                 validatorMessage="#{i18n['validator.select.office']}"
+                                                 value="#{loginBean.officeId}">
+                                    <f:selectItem itemLabel="#{i18n['choose.office']}" itemValue="N/A" />
+                                    <f:selectItems value="#{loginBean.offices}" 
+                                                   var="offices" itemValue="#{offices.id}" 
+                                                   itemLabel="#{offices.officeName}"/>
+                                </p:selectOneMenu>
+                                <p:message for="office" display="text"/>
+                            </h:panelGroup>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:inputText id="username" 
+                                             value="#{loginBean.username}" 
+                                             autocomplete="off" required="true" 
+                                             requiredMessage="#{i18n['require.msg.user.empty']}">
+                                </p:inputText>
+                                <label>#{i18n.user}</label>
+                                <p:message for="username" display="text"/>
+                            </h:panelGroup>
+                        </div>
+                        <div class="ui-g-12">
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:password id="password" 
+                                            value="#{loginBean.password}" 
+                                            maxlength="15"
+                                            autocomplete="off" required="true" 
+                                            requiredMessage="#{i18n['require.msg.password.empty']}">
+                                </p:password>
+                                <label>#{i18n.password}</label>
+                                <p:message for="password" display="text"/>
+                            </h:panelGroup>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <p:commandButton action="#{loginBean.login()}" ajax="false" value="#{i18n['sign.in']}" icon="ui-icon-person"/>
+                        </div>
+                    </div>
+                </div>
+            </h:form>
+        </div>
+        
+        <p:messages showDetail="true" showIcon="false" closable="true" globalOnly="true">
+            <p:autoUpdate />
+        </p:messages>
+
+        <h:outputStylesheet name="css/layout-green.css" library="serenity-layout" />
+    </h:body>
+
+</html>

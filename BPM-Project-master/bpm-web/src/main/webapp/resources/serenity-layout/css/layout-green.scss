@@ -1,0 +1,67 @@
+/* Sidebar */
+$sidebarLogoBgColor:#D4AF37;
+$sidebarBgColor:#ffffff;
+$darkSidebarBgColor:#D4AF37;
+
+/* Primary */
+$primaryColor:#43A047;
+$primaryDarkColor:#2E7D32;
+$primaryLightColor:#81C784;
+$primaryLightestColor:#E8F5E9;
+$primaryTextColor:#ffffff;
+
+/* Accent */
+$accentColor:#D4AF37;
+$accentLightColor:#F3CF59;
+$accentTextColor:#ffffff;
+
+/* Topbar */
+$topbarTextColor:#ffffff;
+$topbarIconColor:#ffffff;
+
+/* Submenu */
+$submenuBgColor:#EEEEEE;
+$darkSubmenuBgColor:#B8860B;
+$horizontalSubmenuBgColor:#EEEEEE;
+$horizontalDarkSubmenuBgColor:#616161;
+$horizontalSubmenuitemHoverBgColor:#E0E0E0;
+$horizontalSubmenuitemDarkHoverBgColor:#545454;
+$horizontalSubmenuitemDarkHoverTextColor:#ffffff;
+$horizontalMenuActiveTextColor:#ffffff;
+$horizontalMenuActiveHoverTextColor:#212121;
+$horizontalDarkMenuActiveTextColor:#ffffff;
+$horizontalDarkMenuActiveHoverTextColor:#ffffff;
+
+/* Default MenuItem */
+$menuitemTextColor:#212121;
+$menuitemIconTextColor:#616161;
+
+/* Hover MenuItem */
+$menuitemHoverBgColor:#E0E0E0;
+$menuitemHoverTextColor:#212121;
+$menuitemHoverIconTextColor:#212121;
+
+/* Active MenuItem */
+$menuitemActiveBgColor:#43A047;
+$menuitemActiveTextColor:#ffffff;
+$menuitemActiveIconTextColor:#ffffff;
+$subMenuitemActiveTextColor:#43A047;
+$subMenuitemActiveIconTextColor:#43A047;
+
+/* Dark Default MenuItem */
+$darkMenuitemTextColor:#dee0e3;
+$darkMenuitemIconTextColor:#dee0e3;
+
+/* Dark Hover MenuItem */
+$darkMenuitemHoverBgColor:#2E7D32;
+$darkMenuitemHoverTextColor:#ffffff;
+$darkMenuitemHoverIconTextColor:#ffffff;
+
+/* Dark Active MenuItem */
+$darkMenuitemActiveBgColor:#2E7D32;
+$darkMenuitemActiveTextColor:#ffffff;
+$darkMenuitemActiveIconTextColor:#ffffff;
+$darksubMenuitemActiveTextColor:#81C784;
+$darksubMenuitemActiveIconTextColor:#81C784;
+
+@import '../../sass/layout/_layout';

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/bpm-web">
+  <!-- 
+        Configure the name and data type of a resource made 
+    available to the application (equivalent to the inclusion of 
+    a <resource-ref> element in the web application deployment descriptor).
+    -->
+  <!-- maxTotal: Maximum number of database connections in pool. Make sure you
+    configure your mysqld max_connections large enough to handle
+    all of your db connections. Set to -1 for no limit.
+    -->
+  <!-- maxIdle: Maximum number of idle database connections to retain in pool.
+    Set to -1 for no limit.  See also the DBCP 2 documentation on this
+    and the minEvictableIdleTimeMillis configuration parameter.
+    -->
+  <!-- maxWaitMillis: Maximum time to wait for a database connection to become available
+    in ms, in this example 10 seconds. An Exception is thrown if
+    this timeout is exceeded.  Set to -1 to wait indefinitely.
+    -->
+  <!-- username and password: MySQL username and password for database connections  -->
+  <!-- driverClassName: Class name for the old mm.mysql JDBC driver is
+    org.gjt.mm.mysql.Driver - we recommend using Connector/J though.
+    Class name for the official MySQL Connector/J driver is com.mysql.jdbc.Driver.
+    -->
+  <!-- url: The JDBC connection url for connecting to your MySQL database.
+    -->
+  <!-- 
+        Configure the name and data type of a resource made 
+    available to the application (equivalent to the inclusion of 
+    a <resource-ref> element in the web application deployment descriptor).
+    -->
+  <Resource auth="Container" driverClassName="com.mysql.cj.jdbc.Driver" factory="org.apache.tomcat.dbcp.dbcp2.BasicDataSourceFactory" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/apcAuth" password="${hibernate.connection.password}" type="javax.sql.DataSource" url="${hibernate.connection.url}" username="${hibernate.connection.username}"/>
+  <!-- 
+         Implementation of the Tomcat Realm interface that looks up users 
+     in a relational database accessed via a JNDI named JDBC DataSource.   
+    -->
+  <Realm className="org.apache.catalina.realm.DataSourceRealm" dataSourceName="jdbc/apcAuth" localDataSource="true" roleNameCol="permission" userCredCol="pwd" userNameCol="user_name" userRoleTable="APC_SECURITY_AUTHORIZATION" userTable="APC_SECURITY_AUTHENTICATION"/>
+</Context>

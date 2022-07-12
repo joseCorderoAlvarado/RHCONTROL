@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"https://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    
+    <query name="findAllOtherExpensesByOffice">
+        <![CDATA[
+            SELECT 
+                e
+            FROM OtherExpense e 
+                WHERE office = :office
+            ORDER BY createdOn DESC
+        ]]>
+    </query> 
+    
+    <query name="findAllOtherExpensesByOfficeBetweenDates">
+        <![CDATA[
+            SELECT 
+                e
+            FROM OtherExpense e 
+                WHERE 
+                    office = :office AND
+                    DATE(e.createdOn) >= DATE(:startDate) AND 
+                    DATE(:endDate) >= DATE(e.createdOn)
+            ORDER BY e.createdOn DESC
+        ]]>
+    </query> 
+    
+</hibernate-mapping>

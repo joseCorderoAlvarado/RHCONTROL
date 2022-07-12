@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"https://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    
+    <query name="findIdsFromUserLogged">
+        <![CDATA[
+            SELECT 
+                ubo.id,
+                u.id,
+                hr.id,
+                hr.firstName,
+                hr.lastName,
+                hr.avatar,
+                o.id,
+                o.officeName
+            FROM UserByOffice ubo
+                INNER JOIN Office o ON ubo.office = o.id
+                INNER JOIN User u ON ubo.user = u.id
+                INNER JOIN HumanResource hr ON u.humanResource = hr.id
+            WHERE
+                u.userName = :userName AND
+                o.id = :officeId AND
+                ubo.userByOfficeStatus = 'ENEBLED' AND
+                u.userStatus = 'ENEBLED' AND
+                o.officeStatus = 'ENEBLED' AND
+                hr.humanResourceStatus = 'ENEBLED' 
+        ]]>
+    </query>
+    
+    <query name="findUsersInOfficeInStatuses">
+        <![CDATA[
+            SELECT 
+                ubo.id AS id,
+                u.id AS usrId,
+                u.userName AS userName,
+                u.userType AS userType,
+                u.certifier AS certifier,
+                hr.id AS hrId,
+                CONCAT(
+                    CASE
+                        WHEN hr.firstName IS NOT NULL AND hr.firstName != ''
+                        THEN CONCAT(SUBSTR(UPPER(hr.firstName), 1, 1),SUBSTR(LOWER(hr.firstName), 2), ' ')
+                        ELSE ''
+                    END,
+                    CASE
+                        WHEN hr.secondName IS NOT NULL AND hr.secondName != ''
+                        THEN CONCAT(SUBSTR(UPPER(hr.secondName), 1, 1),SUBSTR(LOWER(hr.secondName), 2), ' ')
+                        ELSE ''
+                    END, 
+                    CASE
+                        WHEN hr.lastName IS NOT NULL AND hr.lastName != ''
+                        THEN CONCAT(SUBSTR(UPPER(hr.lastName), 1, 1),SUBSTR(LOWER(hr.lastName), 2), ' ')
+                        ELSE ''
+                    END,
+                    CASE
+                        WHEN hr.middleName IS NOT NULL AND hr.middleName != ''
+                        THEN CONCAT(SUBSTR(UPPER(hr.middleName), 1, 1),SUBSTR(LOWER(hr.middleName), 2))
+                        ELSE ''
+                    END
+                ) AS fullName
+            FROM UserByOffice ubo
+                INNER JOIN Office o ON ubo.office = o.id
+                INNER JOIN User u ON ubo.user = u.id
+                INNER JOIN HumanResource hr ON u.humanResource = hr.id
+            WHERE
+                ubo.office = :office AND
+                u.userStatus in :userStatus AND
+                ubo.userByOfficeStatus = 'ENEBLED' AND
+                hr.humanResourceStatus = 'ENEBLED' AND
+                ubo.applicationOwner  = 'APP_USER' AND
+                u.id != :ownerId
+        ]]>
+    </query>
+    
+    <query name="findIdOfUserByOffice">
+        <![CDATA[
+            SELECT
+                ubo.id as id
+            FROM UserByOffice ubo
+            WHERE
+                ubo.user = :user AND
+                ubo.office = :office
+        ]]>
+    </query>
+    
+</hibernate-mapping>

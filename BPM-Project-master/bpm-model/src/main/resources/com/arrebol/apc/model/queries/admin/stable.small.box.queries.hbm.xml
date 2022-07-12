@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"https://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    
+    <query name="findAllStableSmallBoxByOffice">
+        <![CDATA[
+            SELECT 
+                c
+            FROM StableSmallBox c 
+                WHERE office = :office
+                AND activeStatus = :activeStatus
+            ORDER BY createdOn DESC
+        ]]>
+    </query> 
+    
+    <query name="findAllStableSmallBoxByOfficeBetweenDates">
+        <![CDATA[
+            SELECT 
+                c
+            FROM StableSmallBox c 
+                WHERE 
+                    office = :office AND
+                    DATE(createdOn) >= DATE(:startDate) AND 
+                    DATE(:endDate) >= DATE(createdOn)
+            ORDER BY createdOn DESC
+        ]]>
+    </query> 
+    
+    <query name="updateStableSmallBoxByStatus">
+        <![CDATA[
+            UPDATE StableSmallBox
+            SET 
+                activeStatus = :activeStatus,
+                lastUpdatedBy = :lastUpdatedBy,
+                lastUpdatedOn = :lastUpdatedOn
+            WHERE id = :id
+        ]]>
+    </query>
+    
+    <query name="countStableSmallBoxByOfficeAndDate">
+        <![CDATA[
+            SELECT 
+                COUNT(id) 
+            FROM 
+                StableSmallBox 
+            WHERE
+                office = :office AND 
+                activeStatus = 'ENEBLED' AND 
+                DATE(createdOn) = :createdOn
+        ]]>
+    </query>
+    
+</hibernate-mapping>

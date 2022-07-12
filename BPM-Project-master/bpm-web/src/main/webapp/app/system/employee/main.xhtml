@@ -1,0 +1,616 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                template="/WEB-INF/template.xhtml">
+    <ui:define name="head">
+        <h:outputScript library="serenity-layout" name="js/calendar_es.js" />
+    </ui:define>
+
+    <ui:define name="title">#{i18n['project.short.name']} - #{permission['system.employee']}</ui:define>
+
+    <ui:define name="breadcrumb">
+        <li>#{i18n['system.title']}</li>
+        <li>/</li>
+        <li>#{i18n['system.users']}</li>
+        <li>/</li>
+        <li><p:link outcome="#{i18n['outcome.employee']}">#{permission['system.employee']}</p:link></li>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="ui-g ui-fluid">
+
+            <!-- Top Side -->
+            <div class="ui-g-12" style="display: #{loginBean.isUserInRole('system.employee.add') ? 'block' : 'none'}">
+                <div class="card card-w-title">
+                    <h:form rendered="#{loginBean.isUserInRole('system.employee.add')}"
+                            id="createHRForm">
+                        <p:messages id="messages" severity="info, fatal, warn" closable="true" showSummary="true" showDetail="true"/>
+                        <!-- TITLE for this FORM-->
+                        <h1>
+                            <h:outputFormat value="#{i18n['office.selected']}">
+                                <f:param value="#{employeeBean.loggedUser.office.officeName}" />
+                            </h:outputFormat>
+                        </h1>
+                        <h4>#{i18n['add.hr']}</h4>
+
+                        <!-- CONTENT for this FORM-->
+                        <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="firstNamePnlGrp" styleClass="md-inputfield">
+                                <p:inputText id="firstName" 
+                                             style="width: 100%"
+                                             value="#{employeeBean.saveHumanResource.firstName}"
+                                             autocomplete="off"
+                                             required="true"
+                                             requiredMessage="#{i18n['first.name.required']}">
+                                </p:inputText>
+                                <label>#{i18n['first.name']}</label>
+                                <p:message for="firstName" display="icon"/>
+                            </h:panelGroup>
+                            <h:panelGroup id="secondNamePnlGrp" styleClass="md-inputfield">
+                                <p:inputText id="secondName" 
+                                             style="width: 100%" 
+                                             value="#{employeeBean.saveHumanResource.secondName}"
+                                             autocomplete="off"/>
+                                <label>#{i18n['second.name']}</label>
+                            </h:panelGroup>
+                            <h:panelGroup id="lastNamePnlGrp" styleClass="md-inputfield">
+                                <p:inputText id="lastName" 
+                                             style="width: 100%" 
+                                             value="#{employeeBean.saveHumanResource.lastName}"
+                                             autocomplete="off"
+                                             required="true"
+                                             requiredMessage="#{i18n['last.name.required']}">
+                                </p:inputText>
+                                <label>#{i18n['last.name']}</label>
+                                <p:message for="lastName" display="icon"/>
+                            </h:panelGroup>
+                            <h:panelGroup id="middleNamePnlGrp" styleClass="md-inputfield">
+                                <p:inputText id="middleName" 
+                                             style="width: 100%" 
+                                             value="#{employeeBean.saveHumanResource.middleName}"
+                                             autocomplete="off"
+                                             required="true"
+                                             requiredMessage="#{i18n['middle.name.required']}"/>
+                                <label>#{i18n['middle.name']}</label>
+                                <p:message for="middleName" display="icon"/>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="paymentPnlGrp" styleClass="md-inputfield">
+                                <p:inputNumber id="payment" 
+                                               style="width: 100%"
+                                               value="#{employeeBean.saveHumanResource.payment}"
+                                               autocomplete="off"
+                                               required="true"
+                                               decimalSeparator="." thousandSeparator=","
+                                               requiredMessage="#{i18n['payment.required']}"/>
+                                <label>#{i18n['salario']}</label>
+                                <p:message for="payment" display="icon"/>
+                            </h:panelGroup>
+                            <h:panelGroup id="imssPnlGrp" styleClass="md-inputfield">
+                                <p:inputNumber id="imss" 
+                                               style="width: 100%" 
+                                               decimalSeparator="." thousandSeparator=","
+                                               value="#{employeeBean.saveHumanResource.imss}"
+                                               autocomplete="off"
+                                               required="true"
+                                               requiredMessage="#{i18n['imss.required']}"/>
+                                <label>#{i18n['imss']}</label>
+                                <p:message for="imss" display="icon"/>
+                            </h:panelGroup>
+                            <h:panelGroup id="employeeSavingPnlGrp" styleClass="md-inputfield">
+                                <p:inputNumber id="saveEmployee" 
+                                               style="width: 100%" 
+                                               decimalSeparator="." thousandSeparator=","
+                                               value="#{employeeBean.saveHumanResource.employeeSaving}"
+                                               autocomplete="off"
+                                               required="false"/>
+                                <label>Caja de ahorro</label>
+                                <p:message for="imss" display="icon"/>
+                            </h:panelGroup>
+                            <h:panelGroup id="bonusSlcPnlGrp" styleClass="md-inputfield">
+                                <p:selectOneMenu id="bonuSlct" 
+                                                 value="#{employeeBean.bonusId}" 
+                                                 style="margin-bottom:10px;">
+                                </p:selectOneMenu>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="3" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="birthdatePnlGrp" styleClass="md-inputfield">
+                                <p:calendar id="admission" 
+                                            style="text-transform: capitalize;"
+                                            readonlyInput="true"
+                                            value="#{employeeBean.saveHumanResource.birthdate}"
+                                            locale="es" yearRange="-80:" 
+                                            navigator="true" 
+                                            showOn="button"
+                                            pattern="#{i18n['pattern.date']}"/>
+                                <label>#{i18n['date.birthdate']}</label>
+                            </h:panelGroup>
+                            <h:panelGroup id="admissionDatePnlGrp" styleClass="md-inputfield">
+                                <p:calendar showOn="button"
+                                            style="text-transform: capitalize;"
+                                            readonlyInput="true"
+                                            value="#{employeeBean.saveHumanResource.admissionDate}"
+                                            locale="es" yearRange="-25:+1" 
+                                            navigator="true" 
+                                            pattern="#{i18n['pattern.date']}"/>
+                                <label>#{i18n['date.addmission']}</label>
+                            </h:panelGroup>
+                            <h:panelGroup id="roleSlcPnlGrp" styleClass="md-inputfield">
+                                <p:selectOneMenu id="roleSlct" 
+                                                 value="#{employeeBean.role}" 
+                                                 style="margin-bottom:10px;"
+                                                 validator="selectOneMenuValidator"
+                                                 validatorMessage="#{i18n['select.employee.required']}">
+                                    <f:selectItem itemLabel="Selecciona un puesto" itemValue=""/>
+                                    <f:selectItems value="#{employeeBean.roles}" 
+                                                   var="role" itemLabel="#{role.role}" itemValue="#{role.id}" />
+                                </p:selectOneMenu>
+                                <p:message for="roleSlct" display="icon"/>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <!-- Button for this FORM -->
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:commandButton value="#{i18n['add.hr']}"
+                                                 update="firstNamePnlGrp 
+                                                 lastNamePnlGrp 
+                                                 secondNamePnlGrp
+                                                 middleNamePnlGrp 
+                                                 roleSlcPnlGrp
+                                                 birthdatePnlGrp
+                                                 admissionDatePnlGrp
+                                                 paymentPnlGrp
+                                                 imssPnlGrp
+                                                 employeeSavingPnlGrp
+                                                 confirmForm:globalConfirmMsg
+                                                 enebledHRForm:enebledHRSlct 
+                                                 disabledHRForm:disabledHRSlct
+                                                 deletedHRForm:deletedHRSlct 
+                                                 loadHRForm:updateHRSlct
+                                                 messages"
+                                                 action="#{employeeBean.saveHR()}"
+                                                 rendered="#{loginBean.isUserInRole('system.employee.add')}">
+                                    <p:confirm header="#{i18n['add.hr']}" 
+                                               message="#{i18n['hr.confirm.question']}" 
+                                               icon="ui-icon-person"/>
+                                </p:commandButton>
+                            </h:panelGroup>
+                        </p:panelGrid>
+                    </h:form>
+                </div>
+            </div>
+
+            <!-- Left Side -->
+            <div class="ui-g-12 ui-lg-4" style="display: #{loginBean.isUserInRole('system.employee.disabled') ? 'block' : 'none'}">
+                <div class="card card-w-title">
+                    <h:form id="enebledHRForm" rendered="#{loginBean.isUserInRole('system.employee.disabled')}">
+                        <p:messages id="messages" severity="info, fatal, warn" closable="true" showSummary="true" showDetail="true"/>
+                        <!-- TITLE for this FORM-->
+                        <h1>
+                            <h:outputFormat value="#{i18n['office.selected']}">
+                                <f:param value="#{employeeBean.loggedUser.office.officeName}" />
+                            </h:outputFormat>
+                        </h1>
+                        <h4>
+                            #{i18n['employee.disable']}
+                            <p:inputSwitch value="#{employeeBean.enebledHR}">
+                                <p:ajax listener="#{employeeBean.enebledDisabledDropBoxListener(1)}" 
+                                        update="enebledHRBtn enebledHRSlct messages" />
+                            </p:inputSwitch>
+                        </h4>
+
+                        <!-- CONTENT for this FORM-->
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="enebledHRSlctPnlGrp" styleClass="md-inputfield">
+                                <p:selectOneMenu id="enebledHRSlct"
+                                                 filter="true"
+                                                 filterMatchMode="contains"
+                                                 disabled="#{!employeeBean.enebledHR}"
+                                                 value="#{employeeBean.enebledId}" 
+                                                 style="margin-bottom:10px;"
+                                                 validator="selectOneMenuValidator"
+                                                 validatorMessage="#{i18n['select.employee.required']}">
+                                    <f:selectItem itemLabel="#{i18n['select.employee']}" itemValue="N/A" />
+                                    <f:selectItems 
+                                        value="#{employeeBean.enebledHumanResourcesLst}" 
+                                        var="enebledHR" 
+                                        itemValue="#{enebledHR.id}" 
+                                        itemLabel="#{enebledHR.firstName} #{enebledHR.secondName} #{enebledHR.lastName} #{enebledHR.middleName}"/>
+                                </p:selectOneMenu>
+                                <p:message for="enebledHRSlct" display="icon"/>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <!-- Button for this FORM -->
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:commandButton  id="enebledHRBtn"
+                                                  update="enebledHRSlctPnlGrp
+                                                  disabledHRForm:disabledHRSlct
+                                                  deletedHRForm:deletedHRSlct
+                                                  loadHRForm:updateHRSlct
+                                                  confirmForm:globalConfirmMsg
+                                                  messages"
+                                                  disabled="#{!employeeBean.enebledHR}"
+                                                  action="#{employeeBean.actionDropBox(1)}"
+                                                  value="#{i18n['employee.disable.btn']}"
+                                                  rendered="#{loginBean.isUserInRole('system.employee.disabled')}">
+                                    <p:confirm header="#{i18n['employee.disable.btn']}" 
+                                               message="#{i18n['hr.confirm.question']}" 
+                                               icon="ui-icon-person"/>
+                                </p:commandButton>
+                            </h:panelGroup>
+                        </p:panelGrid>
+                    </h:form>
+                </div>
+            </div>
+
+            <!-- Center Side -->
+            <div class="ui-g-12 ui-lg-4" style="display: #{loginBean.isUserInRole('system.employee.enebled') ? 'block' : 'none'}">
+                <div class="card card-w-title">
+                    <h:form id="disabledHRForm" rendered="#{loginBean.isUserInRole('system.employee.enebled')}">
+                        <p:messages id="messages" severity="info, fatal, warn" closable="true" showSummary="true" showDetail="true"/>
+                        <!-- TITLE for this FORM-->
+                        <h1>
+                            <h:outputFormat value="#{i18n['office.selected']}">
+                                <f:param value="#{employeeBean.loggedUser.office.officeName}" />
+                            </h:outputFormat>
+                        </h1>
+                        <h4>
+                            #{i18n['employee.eneble']}
+                            <p:inputSwitch value="#{employeeBean.disabledHR}">
+                                <p:ajax listener="#{employeeBean.enebledDisabledDropBoxListener(2)}" 
+                                        update="disabledHRBtn disabledHRSlct messages" />
+                            </p:inputSwitch>
+                        </h4>
+
+                        <!-- CONTENT for this FORM-->
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="disabledHRSlctPnlGrp" styleClass="md-inputfield">
+                                <p:selectOneMenu id="disabledHRSlct" 
+                                                 filter="true"
+                                                 filterMatchMode="contains"
+                                                 disabled="#{!employeeBean.disabledHR}"
+                                                 value="#{employeeBean.disabledId}" 
+                                                 style="margin-bottom:10px;"
+                                                 validator="selectOneMenuValidator"
+                                                 validatorMessage="#{i18n['select.employee.required']}">
+                                    <f:selectItem itemLabel="#{i18n['select.employee']}" itemValue="N/A" />
+                                    <f:selectItems 
+                                        value="#{employeeBean.disabledHumanResourcesLst}" 
+                                        var="disabledHR" 
+                                        itemValue="#{disabledHR.id}" 
+                                        itemLabel="#{disabledHR.firstName} #{disabledHR.secondName} #{disabledHR.lastName} #{disabledHR.middleName}"/>
+                                </p:selectOneMenu>
+                                <p:message for="disabledHRSlct" display="icon"/>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <!-- Button for this FORM -->
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:commandButton id="disabledHRBtn"
+                                                 update="disabledHRSlctPnlGrp
+                                                 enebledHRForm:enebledHRSlct
+                                                 deletedHRForm:deletedHRSlct
+                                                 loadHRForm:updateHRSlct
+                                                 confirmForm:globalConfirmMsg
+                                                 messages"
+                                                 disabled="#{!employeeBean.disabledHR}"
+                                                 action="#{employeeBean.actionDropBox(2)}"
+                                                 value="#{i18n['employee.eneble.btn']}"
+                                                 rendered="#{loginBean.isUserInRole('system.employee.enebled')}">
+                                    <p:confirm header="#{i18n['employee.eneble.btn']}" 
+                                               message="#{i18n['hr.confirm.question']}" 
+                                               icon="ui-icon-person"/>
+                                </p:commandButton>
+                            </h:panelGroup>
+                        </p:panelGrid>
+                    </h:form>
+                </div>
+            </div>
+
+            <!-- Right Side -->
+            <div class="ui-g-12 ui-lg-4" style="display: #{loginBean.isUserInRole('system.employee.deleted') ? 'block' : 'none'}">
+                <div class="card card-w-title">
+                    <h:form id="deletedHRForm" rendered="#{loginBean.isUserInRole('system.employee.deleted')}">
+                        <p:messages id="messages" severity="info, fatal, warn" closable="true" showSummary="true" showDetail="true"/>
+                        <!-- TITLE for this FORM-->
+                        <h1>
+                            <h:outputFormat value="#{i18n['office.selected']}">
+                                <f:param value="#{employeeBean.loggedUser.office.officeName}" />
+                            </h:outputFormat>
+                        </h1>
+                        <h4>#{i18n['employee.delete']}
+                            <p:inputSwitch value="#{employeeBean.deletedHR}">
+                                <p:ajax listener="#{employeeBean.deletedHRListener()}" 
+                                        update="deletedHRBtn deletedHRSlct messages" />
+                            </p:inputSwitch>
+                        </h4>
+
+                        <!-- CONTENT for this FORM-->
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="deletedHRSlctPnlGrp" styleClass="md-inputfield">
+                                <p:selectOneMenu id="deletedHRSlct" 
+                                                 disabled="#{!employeeBean.deletedHR}"
+                                                 filter="true"
+                                                 filterMatchMode="contains"
+                                                 value="#{employeeBean.deletedId}" 
+                                                 style="margin-bottom:10px;"
+                                                 validator="selectOneMenuValidator"
+                                                 validatorMessage="#{i18n['select.employee.required']}">
+                                    <f:selectItem itemLabel="#{i18n['select.employee']}" itemValue="N/A" />
+                                    <f:selectItems 
+                                        value="#{employeeBean.deletedHumanResourcesLst}" 
+                                        var="deleteHR" 
+                                        itemValue="#{deleteHR.id}" 
+                                        itemLabel="#{deleteHR.firstName} #{deleteHR.secondName} #{deleteHR.lastName} #{deleteHR.middleName}"/>
+                                </p:selectOneMenu>
+                                <p:message for="deletedHRSlct" display="icon"/>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <!-- Button for this FORM -->
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:commandButton id="deletedHRBtn"
+                                                 update="deletedHRSlctPnlGrp
+                                                 enebledHRForm:enebledHRSlct
+                                                 disabledHRForm:disabledHRSlct
+                                                 loadHRForm:updateHRSlct
+                                                 confirmForm:globalConfirmMsg
+                                                 messages"
+                                                 disabled="#{!employeeBean.deletedHR}"
+                                                 action="#{employeeBean.actionDropBox(3)}"
+                                                 value="#{i18n['employee.delete.btn']}"
+                                                 rendered="#{loginBean.isUserInRole('system.employee.deleted')}">
+                                    <p:confirm header="#{i18n['employee.delete.btn']}" 
+                                               message="#{i18n['hr.confirm.question']}" 
+                                               icon="ui-icon-person"/>
+                                </p:commandButton>
+                            </h:panelGroup>
+                        </p:panelGrid>
+                    </h:form>
+                </div>
+            </div>
+
+            <!-- Bottom Side -->
+            <div class="ui-g-12" style="display: #{loginBean.isUserInRole('system.employee.updated') ? 'block' : 'none'}">
+                <div class="card card-w-title">
+                    <h:form id="updateHRForm" rendered="#{loginBean.isUserInRole('system.employee.updated')}">
+                        <p:messages id="messages" severity="info, fatal, warn" closable="true" showSummary="true" showDetail="true"/>
+                        <!-- TITLE for this FORM-->
+                        <h1>
+                            <h:outputFormat value="#{i18n['office.selected']}">
+                                <f:param value="#{userAccessBean.loggedUser.office.officeName}" />
+                            </h:outputFormat>
+                        </h1>
+                        <h4>
+                            #{i18n['hr.update.btn']}
+                            <p:inputSwitch value="#{employeeBean.selectedUpdateHR}">
+                                <p:ajax listener="#{employeeBean.enebledDisabledDropBoxListener(4)}" 
+                                        update="loadHRForm:updateSlctBtnHR loadHRForm:updateHRSlct messages updateDetailsHRForm" />
+                            </p:inputSwitch>
+                        </h4>
+                    </h:form>
+
+                    <h:form id="loadHRForm">
+                        <!-- CONTENT for this FORM-->
+                        <div class="ui-g-12 ui-lg-4" rendered="#{loginBean.isUserInRole('system.employee.updated')}">
+                            <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                                <h:panelGroup id="updateHRSlctPnlGrp" styleClass="md-inputfield">
+                                    <p:selectOneMenu id="updateHRSlct" 
+                                                     filter="true"
+                                                     filterMatchMode="contains"
+                                                     disabled="#{!employeeBean.selectedUpdateHR}"
+                                                     value="#{employeeBean.updateId}"
+                                                     validator="selectOneMenuValidator"
+                                                     validatorMessage="#{i18n['select.employee.required']}">
+                                        <f:selectItem itemLabel="#{i18n['select.employee']}" itemValue="N/A" />
+                                        <f:selectItems 
+                                            value="#{employeeBean.updateHumanResourcesLst}" 
+                                            var="updateHR" 
+                                            itemValue="#{updateHR.id}" 
+                                            itemLabel="#{updateHR.firstName} #{updateHR.secondName} #{updateHR.lastName} #{updateHR.middleName}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="updateHRSlct" display="icon"/>
+                                </h:panelGroup>
+                            </p:panelGrid>
+
+                            <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                                <h:panelGroup styleClass="md-inputfield">
+                                    <p:commandButton id="updateSlctBtnHR"
+                                                     update="updateDetailsHRForm updateHRForm:messages"
+                                                     disabled="#{!employeeBean.selectedUpdateHR}"
+                                                     value="#{i18n['employee.update.load.btn']}"
+                                                     actionListener="#{employeeBean.loadUserToUpdate()}"
+                                                     rendered="#{loginBean.isUserInRole('system.employee.updated')}">
+                                        <p:confirm header="#{i18n['employee.update.load.btn']}" 
+                                                   message="#{i18n['hr.confirm.question']}" 
+                                                   icon="ui-icon-person"/>
+                                    </p:commandButton>
+                                </h:panelGroup>
+                            </p:panelGrid>
+                        </div>
+                    </h:form>
+
+                    <h:form id="updateDetailsHRForm" rendered="#{loginBean.isUserInRole('system.employee.updated')}">
+                        <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank form-group">
+
+                            <h:panelGroup id="firstNamePnlGrp" styleClass="md-inputfield">
+                                <p:inputText id="firstName" 
+                                             disabled="#{!employeeBean.selectedUpdateHR}"
+                                             style="width: 100%" 
+                                             value="#{employeeBean.updateHumanResource.firstName}"
+                                             autocomplete="off"
+                                             required="true"
+                                             requiredMessage="#{i18n['first.name.required']}">
+                                </p:inputText>
+                                <label>#{i18n['first.name']}</label>
+                                <p:message for="firstName" display="icon"/>
+                            </h:panelGroup>
+                            <h:panelGroup id="secondNamePnlGrp" styleClass="md-inputfield">
+                                <p:inputText id="secondName"
+                                             disabled="#{!employeeBean.selectedUpdateHR}"
+                                             style="width: 100%" 
+                                             value="#{employeeBean.updateHumanResource.secondName}"
+                                             autocomplete="off"/>
+                                <label>#{i18n['second.name']}</label>
+                            </h:panelGroup>
+                            <h:panelGroup id="lastNamePnlGrp" styleClass="md-inputfield">
+                                <p:inputText id="lastName" 
+                                             disabled="#{!employeeBean.selectedUpdateHR}"
+                                             style="width: 100%" 
+                                             value="#{employeeBean.updateHumanResource.lastName}"
+                                             autocomplete="off"
+                                             required="true"
+                                             requiredMessage="#{i18n['last.name.required']}">
+                                </p:inputText>
+                                <label>#{i18n['last.name']}</label>
+                                <p:message for="lastName" display="icon"/>
+                            </h:panelGroup>
+                            <h:panelGroup id="middleNamePnlGrp" styleClass="md-inputfield">
+                                <p:inputText id="middleName" 
+                                             style="width: 100%" 
+                                             disabled="#{!employeeBean.selectedUpdateHR}"
+                                             value="#{employeeBean.updateHumanResource.middleName}"
+                                             autocomplete="off"
+                                             required="true"
+                                             requiredMessage="#{i18n['middle.name.required']}"/>
+                                <label>#{i18n['middle.name']}</label>
+                                <p:message for="middleName" display="icon"/>
+                            </h:panelGroup>
+                        </p:panelGrid>
+                        
+                        <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="paymentPnlGrp" styleClass="md-inputfield">
+                                <p:inputNumber id="payment" 
+                                               style="width: 100%"
+                                               disabled="#{!employeeBean.selectedUpdateHR}"
+                                               value="#{employeeBean.updateHumanResource.payment}"
+                                               autocomplete="off"
+                                               required="true"
+                                               decimalSeparator="." thousandSeparator=","
+                                               requiredMessage="#{i18n['payment.required']}"/>
+                                <label>#{i18n['salario']}</label>
+                                <p:message for="payment" display="icon"/>
+                            </h:panelGroup>
+                            <h:panelGroup id="imssPnlGrp" styleClass="md-inputfield">
+                                <p:inputNumber id="imss" 
+                                               style="width: 100%" 
+                                               disabled="#{!employeeBean.selectedUpdateHR}"
+                                               decimalSeparator="." thousandSeparator=","
+                                               value="#{employeeBean.updateHumanResource.imss}"
+                                               autocomplete="off"
+                                               required="true"
+                                               requiredMessage="#{i18n['imss.required']}"/>
+                                <label>#{i18n['imss']}</label>
+                                <p:message for="imss" display="icon"/>
+                            </h:panelGroup>
+                            <h:panelGroup id="employeeSavPnlGrp" styleClass="md-inputfield">
+                                <p:inputNumber id="employeeSav" 
+                                               style="width: 100%" 
+                                               disabled="#{!employeeBean.selectedUpdateHR}"
+                                               decimalSeparator="." thousandSeparator=","
+                                               value="#{employeeBean.updateHumanResource.employeeSaving}"
+                                               autocomplete="off"
+                                               requiredMessage="#{i18n['imss.required']}"/>
+                                <label>Caja de ahorro</label>
+                                <p:message for="employeeSav" display="icon"/>
+                            </h:panelGroup>
+                            <h:panelGroup id="bonusSlcPnlGrp" styleClass="md-inputfield">
+                                <p:selectOneMenu id="bonuSlct" 
+                                                 value="#{employeeBean.bonusId}" 
+                                                 disabled="#{!employeeBean.selectedUpdateHR}"
+                                                 style="margin-bottom:10px;">
+                                    <f:selectItem itemLabel="#{employeeBean.updateHumanResource.bonus.name}" itemValue="#{employeeBean.updateHumanResource.bonus.id}"/>
+                                    <f:selectItems value="#{employeeBean.bonuses}" 
+                                                   var="bonus" 
+                                                   itemLabel="#{bonus.name}" 
+                                                   itemValue="#{bonus.id}" />
+                                </p:selectOneMenu>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="3" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:calendar id="admission"
+                                            disabled="#{!employeeBean.selectedUpdateHR}"
+                                            style="text-transform: capitalize;"
+                                            readonlyInput="true"
+                                            value="#{employeeBean.updateHumanResource.birthdate}"
+                                            locale="es" yearRange="-80:" 
+                                            navigator="true" 
+                                            showOn="button"
+                                            pattern="#{i18n['pattern.date']}"/>
+                                <label>#{i18n['date.birthdate']}</label>
+                            </h:panelGroup>
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:calendar showOn="button"
+                                            disabled="#{!employeeBean.selectedUpdateHR}"
+                                            style="text-transform: capitalize;"
+                                            readonlyInput="true"
+                                            value="#{employeeBean.updateHumanResource.admissionDate}"
+                                            locale="es" yearRange="-25:+1" 
+                                            navigator="true" 
+                                            pattern="#{i18n['pattern.date']}"/>
+                                <label>#{i18n['date.addmission']}</label>
+                            </h:panelGroup>
+                            <h:panelGroup id="roleSlcPnlGrp" styleClass="md-inputfield">
+                                <p:selectOneMenu id="roleSlct"
+                                                 disabled="#{!employeeBean.selectedUpdateHR}"
+                                                 style="margin-bottom:10px;"
+                                                 value="#{employeeBean.roleUpdate}"
+                                                 validator="selectOneMenuValidator"
+                                                 validatorMessage="#{i18n['select.employee.required']}">
+                                    <f:selectItem itemLabel="#{employeeBean.updateHumanResource.roleCtlg.role}" 
+                                                  itemValue="#{employeeBean.updateHumanResource.roleCtlg.id}"/>
+                                    <f:selectItems value="#{employeeBean.roles}" 
+                                                   var="role" itemLabel="#{role.role}" itemValue="#{role.id}" />
+                                </p:selectOneMenu>
+                                <p:message for="roleSlct" display="icon"/>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <!-- Button for this FORM -->
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:commandButton update="updateDetailsHRForm
+                                                 deletedHRForm:deletedHRSlct
+                                                 enebledHRForm:enebledHRSlct
+                                                 disabledHRForm:disabledHRSlct
+                                                 confirmForm:globalConfirmMsg
+                                                 updateHRForm:messages"
+                                                 disabled="#{!employeeBean.selectedUpdateHR}"
+                                                 action="#{employeeBean.updateSlctBtnHRAction()}"
+                                                 value="#{i18n['hr.update.btn']}"
+                                                 rendered="#{loginBean.isUserInRole('system.employee.updated')}">
+                                    <p:confirm header="#{i18n['hr.update.btn']}" 
+                                               message="#{i18n['hr.confirm.question']}" 
+                                               icon="ui-icon-person"/>
+                                </p:commandButton>
+                            </h:panelGroup>
+                        </p:panelGrid>
+                    </h:form>
+                </div>
+            </div>
+
+            <!-- Popup -->
+            <h:form id="confirmForm">
+                <p:confirmDialog id="globalConfirmMsg" global="true" showEffect="clip" hideEffect="clip">
+                    <p:commandButton value="#{i18n['confirm.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="#{i18n['confirm.no']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog> 
+            </h:form>
+        </div>
+    </ui:define>
+
+</ui:composition>

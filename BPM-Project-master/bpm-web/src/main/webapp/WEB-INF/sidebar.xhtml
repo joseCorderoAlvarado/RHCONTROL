@@ -1,0 +1,100 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pm="http://primefaces.org/serenity">
+
+    <div class="layout-sidebar layout-sidebar-dark">
+        <div class="sidebar-logo">
+            <p:link outcome="#{i18n['outcome.dashboard']}">
+                <p:graphicImage name="images/logo_emp.png" library="serenity-layout"/>
+                <span class="app-name" style="font-style: italic;font-weight: bold">BPM</span>
+            </p:link>
+            <a href="#" class="sidebar-anchor" title="Toggle Menu"></a>
+        </div>
+
+        <div class="nano">
+            <div class="nano-content sidebar-scroll-content">
+                <div class="layout-menu-container">
+                    <h:form id="menuform">
+                        <pm:menu>
+                            <p:menuitem  
+                                id="dashboard" 
+                                value="#{i18n['dashboard.title']}" 
+                                icon="&#xE871;" 
+                                outcome="#{i18n['outcome.dashboard']}"
+                                rendered="#{loginBean.isUserInRole('public.access')}"/>
+                            <p:submenu id="system" label="#{i18n['system.title']}" icon="computer"
+                                       rendered="#{loginBean.isUserInRole('system.employee') or
+                                                   loginBean.isUserInRole('system.user.create') or 
+                                                   loginBean.isUserInRole('system.user.admin') or
+                                                   loginBean.isUserInRole('system.user.access')}">
+                                <p:menuitem 
+                                    id="system_employee" 
+                                    value="#{i18n.hr}" 
+                                    icon="person_outline" 
+                                    outcome="#{i18n['outcome.employee']}"
+                                    rendered="#{loginBean.isUserInRole('system.employee')}"/>
+                                <p:submenu id="system_user" label="#{i18n['system.users']}" icon="group"
+                                           rendered="#{loginBean.isUserInRole('system.user.create') or 
+                                                       loginBean.isUserInRole('system.user.admin') or
+                                                       loginBean.isUserInRole('system.user.access.')}">
+                                    <p:menuitem
+                                        id="system_user_add" 
+                                        value="#{i18n['system.users.add']}" 
+                                        icon="person_add" 
+                                        outcome="#{i18n['outcome.system.user.add']}"
+                                        rendered="#{loginBean.isUserInRole('system.user.create')}"/>
+                                    <p:menuitem 
+                                        id="system_user_setting" 
+                                        value="#{i18n['system.users.setting']}" 
+                                        icon="refresh" 
+                                        outcome="#{i18n['outcome.system.user.setting']}"
+                                        rendered="#{loginBean.isUserInRole('system.user.admin')}"/>
+                                    <p:menuitem 
+                                        id="system_user_access" 
+                                        value="#{i18n['system.users.permission']}" 
+                                        icon="vpn_key" 
+                                        outcome="#{i18n['outcome.system.user.access']}"
+                                        rendered="#{loginBean.isUserInRole('system.user.access.')}"/>
+                                </p:submenu>
+                                <p:menuitem  
+                                    id="bitacora" 
+                                    value="#{i18n['system.bitacora']}" 
+                                    icon="announcement" 
+                                    outcome="#{i18n['outcome.system.bitacora']}"
+                                    rendered="#{loginBean.isUserInRole('system.office')}"/>
+                            </p:submenu>
+                            <p:submenu id="catalog" label="#{i18n['catalog.title']}" icon="book"
+                                       rendered="#{loginBean.isUserInRole('catalog.role') or 
+                                                loginBean.isUserInRole('catalog.typeLoan') or 
+                                                loginBean.isUserInRole('catalog.route')}">
+                                <p:menuitem 
+                                        id="catalog_role_access" 
+                                        value="#{i18n['catalog.roles']}" 
+                                        icon="work" 
+                                        outcome="#{i18n['outcome.catalog.role']}"
+                                        rendered="#{loginBean.isUserInRole('catalog.role')}"/>
+                                <p:menuitem 
+                                        id="catalog_type_loan_access" 
+                                        value="#{i18n['catalog.typeLoan']}" 
+                                        icon="attachment" 
+                                        outcome="#{i18n['outcome.catalog.typeLoan']}"
+                                        rendered="#{loginBean.isUserInRole('catalog.typeLoan')}"/>
+                                <p:menuitem 
+                                        id="catalog_route_access" 
+                                        value="#{i18n['catalog.route']}" 
+                                        icon="timeline" 
+                                        outcome="#{i18n['outcome.catalog.route']}"
+                                        rendered="#{loginBean.isUserInRole('catalog.route')}"/>
+                            </p:submenu>    
+                        </pm:menu>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</ui:composition>

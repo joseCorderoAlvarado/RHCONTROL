@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MMM-dd hh:mm:ss a } %level %c - %m %n" />
+        </Console>
+        <JDBC name="MySQLDatabase" tableName="APC_ERROR_APP_LOG">
+            <LevelRangeFilter minLevel="ERROR" maxLevel="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <ConnectionFactory
+                class="com.arrebol.apc.controller.util.logger.LogConnectionFactory" method="getConnection" />
+            <Column name="id_log" pattern="%u" />
+            <Column name="log_entry_date" isEventTimestamp="true" />
+            <Column name="log_logger" pattern="%logger" />
+            <Column name="log_level" pattern="%level" />
+            <Column name="log_message" pattern="%m" />
+            <Column name="log_exception" pattern="%throwable" />
+        </JDBC>
+        <!--File name="MyFileLog" fileName="/Users/Picasso/Documents/servers/apache-tomcat-8.5.34/logs/apc-web.log"-->
+        <File name="MyFileLog" fileName="/var/log/tomcat/bpm-web.log">
+            <LevelRangeFilter minLevel="INFO" maxLevel="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout>
+                <Pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Pattern>
+            </PatternLayout>
+        </File>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.arrebol.apc" level="DEBUG"
+                additivity="false">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="MySQLDatabase" />
+            <AppenderRef ref="MyFileLog" />
+        </Logger>
+
+        <Root level="INFO">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="MySQLDatabase" />
+            <AppenderRef ref="MyFileLog" />
+        </Root>
+    </Loggers>
+
+</Configuration>

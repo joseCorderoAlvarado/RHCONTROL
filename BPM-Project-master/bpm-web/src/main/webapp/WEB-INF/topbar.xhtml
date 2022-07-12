@@ -1,0 +1,109 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pa="http://primefaces.org/serenity">
+
+    <div class="layout-topbar">
+        <p:link outcome="#{i18n['outcome.dashboard']}" class="topbar-logo">
+            <p:graphicImage name="images/logo_emp.png" library="serenity-layout" />
+            <span class="app-name">#{i18n['project.complete.name']}</span>
+        </p:link>
+
+        <p:graphicImage name="images/logo_emp.png" library="serenity-layout" styleClass="mobile-logo" />
+
+        <a href="#" class="menu-btn">
+            <i class="material-icons">&#xE5D2;</i>
+        </a>
+
+        <a href="#" class="topbar-menu-btn">
+            <i class="material-icons">&#xE853;</i>
+        </a>
+
+        <div class="layout-topbar-menu-wrapper">
+
+            <div class="sidebar-logo">
+                <a href="#{i18n['outcome.dashboard']}">
+                    <p:graphicImage name="images/logo_emp.png" library="serenity-layout" />
+                    <span class="app-name">#{i18n['project.complete.name']}</span>
+                </a>
+                <a href="#" class="sidebar-anchor" title="Toggle Menu"></a>
+            </div> 
+
+            <ul class="topbar-menu animated">
+
+                <li class="profile-item">
+                    <a href="#">       
+                        <span class="profile-image-wrapper">
+                            <p:graphicImage name="#{topBarBean.loggedUser.user.humanResource.avatar}" library="serenity-layout" />
+                        </span>                     
+                        <span class="topbar-item-name profile-name">#{topBarBean.loggedUser.user.humanResource.firstName} #{topBarBean.loggedUser.user.humanResource.lastName}</span>
+                    </a>
+
+                    <ul class="animated">
+                        <li role="menuitem">
+                            <p:link outcome="#{i18n['outcome.privacy']}" rendered="#{loginBean.isUserInRole('public.access')}">
+                                <i class="material-icons">&#xE32A;</i>
+                                <span>#{i18n.privacy}</span>
+                            </p:link>
+                        </li>
+                        <li role="menuitem">
+                            <h:form>
+                                <p:commandLink id="ajax" action="#{loginBean.logout}">
+                                    <i class="material-icons">&#xE8AC;</i>
+                                    <span>#{i18n['sign.out']}</span>
+                                </p:commandLink>
+                            </h:form>
+                        </li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <i class="topbar-icon material-icons">explore</i>
+                        <span class="topbar-item-name">#{i18n.office}</span>
+                    </a>
+                    <ul class="animated">
+                        <li role="menuitem">
+                            <p:link href="#">
+                                <i class="material-icons" style="color: #B8860B">sort_by_alpha</i>
+                                <span style="color: #B8860B">#{i18n['choose.office']}</span>
+                            </p:link>
+                        </li>
+                        <p:separator/>
+                        <h:form id="notificationLstForm">
+                            <p:growl id="message" showDetail="true" />
+                            <p:scrollPanel mode="native" style="height: #{topBarBean.offices.size() eq 1 ? '45px': '90px'};border: none;">
+                                <p:repeat value="#{topBarBean.offices}" var="office">
+                                    <li role="menuitem">
+                                        <p:commandLink >
+                                            <i class="material-icons" style=" color: #{topBarBean.loggedUser.office.id eq office.id? 'blue': '#757575'}">
+                                                #{topBarBean.loggedUser.office.id eq office.id? 'person_pin_circle': 'place'}
+                                            </i>
+                                            <span>
+                                                <h:outputFormat value="#{i18n['office.selected']}">
+                                                    <f:param value="#{office.officeName}" />
+                                                </h:outputFormat>
+                                            </span>
+                                            <p:confirm header="#{i18n['office.confirm.header']}" 
+                                                       message="#{i18n['office.confirm.question']}" 
+                                                       icon="ui-icon-person-pin-circle"/>
+                                        </p:commandLink>
+                                    </li>
+                                </p:repeat>
+                            </p:scrollPanel>
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+                            </p:confirmDialog>      
+                        </h:form>
+                    </ul>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+
+</ui:composition>

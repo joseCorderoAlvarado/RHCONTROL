@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"https://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    
+    <query name="findAllExpenseCompanyByOffice">
+        <![CDATA[
+            SELECT 
+                c
+            FROM ExpenseCompany c 
+                WHERE office = :office
+                AND expenseCompanyType = :expenseCompanyType 
+                AND activeStatus = :activeStatus
+            ORDER BY createdOn DESC
+        ]]>
+    </query> 
+    
+    <query name="findAllExpenseCompanyByOfficeBetweenDates">
+        <![CDATA[
+            SELECT 
+                c
+            FROM ExpenseCompany c 
+            WHERE 
+                office = :office AND
+                expenseCompanyType = :expenseCompanyType AND
+                DATE(createdOn) >= DATE(:startDate) AND 
+                DATE(:endDate) >= DATE(createdOn)
+            ORDER BY createdOn DESC
+        ]]>
+    </query>
+    
+    <query name="updateExpenseCompanyByStatus">
+        <![CDATA[
+            UPDATE ExpenseCompany
+            SET 
+                activeStatus = :activeStatus,
+                lastUpdatedBy = :lastUpdatedBy,
+                lastUpdatedOn = :lastUpdatedOn
+            WHERE id = :id
+        ]]>
+    </query>
+    
+</hibernate-mapping>

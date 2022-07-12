@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"https://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    
+    <query name="updateByRouteId">
+        <![CDATA[
+            UPDATE RouteCtlg
+            SET 
+                activeStatus = :activeStatus,
+                lastUpdatedBy = :lastUpdatedBy,
+                lastUpdatedOn = :lastUpdatedOn
+            WHERE
+                id = :id
+        ]]>
+    </query>
+    
+    <query name="findAllRoutes">
+        <![CDATA[
+            SELECT 
+                r
+            FROM RouteCtlg r
+            WHERE
+                activeStatus = :activeStatus
+                AND 
+                office = :office
+        ]]>
+    </query>
+    
+    <query name="findRoutesWithNoCertifierUser">
+        <![CDATA[
+            SELECT 
+                rC 
+            FROM 
+                RouteCtlg rC
+            WHERE 
+                rC.id NOT IN (
+                    SELECT 
+                        r.id 
+                    FROM 
+                        RouteCtlg r
+                    INNER JOIN 
+                        HumanResourceHasRoute hrhr ON r.id = hrhr.routeCtlg
+                    INNER JOIN 
+                        User u ON hrhr.humanResource = u.humanResource
+                    WHERE 
+                        u.certifier = 'ENEBLED' AND
+                        r.office = :office
+                )
+                AND rC.office = :office
+        ]]>
+    </query>
+    
+    <query name="findAllAvailablesRoutes">
+        <![CDATA[
+            SELECT 
+                r.id AS id,
+                r.route AS route
+            FROM RouteCtlg r
+            WHERE
+                activeStatus = :activeStatus AND 
+                office = :office
+        ]]>
+    </query>
+    
+    <query name="findAllRoutesByHRHR">
+        <![CDATA[
+            SELECT 
+                r.id AS id,
+                r.route AS route
+            FROM 
+                RouteCtlg r
+                INNER JOIN HumanResourceHasRoute hrhr
+                ON r.id = hrhr.routeCtlg
+            WHERE 
+                hrhr.humanResource = :humanResource AND 
+                r.office = :office
+            ORDER BY r.route DESC
+        ]]>
+    </query>
+    
+    <query name="findAllNotRoutesByHRHR">
+        <![CDATA[
+            SELECT 
+                r.id AS id,
+                r.route AS route
+            FROM 
+                RouteCtlg r
+            WHERE 
+                r.id NOT IN (
+                    SELECT 
+                        inner_r.id
+                    FROM 
+                        RouteCtlg inner_r
+                        INNER JOIN HumanResourceHasRoute inner_hrhr
+                        ON inner_r.id = inner_hrhr.routeCtlg
+                    WHERE 
+                        inner_hrhr.humanResource = :humanResource AND 
+                        inner_r.office = :office
+                ) AND
+                r.office = :office
+            ORDER BY r.route DESC
+        ]]>
+    </query>
+    
+</hibernate-mapping>

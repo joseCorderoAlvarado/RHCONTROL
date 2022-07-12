@@ -1,0 +1,104 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+    <ui:define name="title">#{i18n['project.short.name']} - #{permission['system.office']}</ui:define>
+    <ui:define name="head">
+        <h:outputScript library="js" name="scriptGeneric/dialogGeneric.js" />
+    </ui:define>
+    <ui:define name="breadcrumb">
+        <li>#{i18n['system.title']}</li>
+        <li>/</li>
+        <li><p:link outcome="#{i18n['outcome.system.office']}">#{permission['system.office']}</p:link></li>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="ui-g">
+            <div class="ui-g-12">
+                <div class="card card-w-title">
+                    <h1>#{i18n['system.office']}</h1>
+                    <h:form id="form" rendered="#{loginBean.isUserInRole('system.office')}">
+                        <p:growl id="msgs" showDetail="true"/>
+
+                        <p:dataTable widgetVar="dtOffice" id="dtOffice" var="office" draggableRows="true" draggableColumns="true" value="#{officeManager.office}" style="margin-bottom:20px" reflow="true" rowsPerPageTemplate="5,10,25,50,100" emptyMessage="#{i18n['system.office.datatable.empty']}"
+                                     rowKey="#{office.id}" selection="#{officeManager.selectedOffice}" editable="true" selectionMode="single" paginator="true" rows="10" paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
+
+                            <f:facet name="header">
+                                <p:commandButton id="toggler" type="button" value="Columnas" style="float:left;" styleClass="amber-btn flat" icon="ui-icon-calendar"/>
+                                <p:columnToggler datasource="dtOffice" trigger="toggler" />
+                                <p:commandButton type="button" value="#{i18n['button.add']}" styleClass="amber-btn flat" style="float: right;" icon="ui-icon-plus" onclick="PF('dlg2').show();" rendered="#{loginBean.isUserInRole('system.office.add')}"/>
+
+                                <p:outputPanel>
+                                    <h:outputText value="#{i18n['general.search']}: " />
+                                    <p:inputText id="globalFilter" onkeyup="PF('dtOffice').filter()" style="width:150px;color: #000000;"/>
+                                </p:outputPanel>
+                            </f:facet>
+
+                            <p:ajax event="rowEdit" listener="#{officeManager.editRow}" update=":form:msgs" />
+                            <p:ajax event="rowEditCancel" listener="#{officeManager.onRowCancel}" update=":form:msgs" />
+                            <p:ajax event="rowReorder" listener="#{officeManager.onRowReorder}" update=":form:msgs" />
+
+                            <p:column headerText="#{i18n['system.office.datatable.column.name']}" sortBy="#{office.officeName}" filterBy="#{office.officeName}">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{office.officeName}" /></f:facet>
+                                    <f:facet name="input"><p:inputText id="modelInputName" value="#{office.officeName}" required="true" requiredMessage="Valor Obligatorio" style="width:100%; color: #000000;"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            
+                            <p:column headerText="#{i18n['system.office.datatable.column.address']}" sortBy="#{office.address}" filterBy="#{office.address}">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{office.address}" /></f:facet>
+                                    <f:facet name="input"><p:inputText id="modelInputAddress" value="#{office.address}" required="true" requiredMessage="Valor Obligatorio" style="width:100%; color: #000000;"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column style="width:40px" headerText="Editar">
+
+                                <p:rowEditor editTitle="#{i18n['button.edit']}" rendered="#{loginBean.isUserInRole('system.office.updated')}"/>
+
+                            </p:column>
+
+                        </p:dataTable>
+
+                        <p:contextMenu for="dtOffice" rendered="#{loginBean.isUserInRole('system.office.deleted')}">
+                            <p:menuitem value="Borrar" update="dtOffice,:form:msgs" icon="ui-icon-close" actionListener="#{officeManager.deleteRow}">
+                                <p:confirm message="#{i18n['general.confirm.confirm']}"  />
+                            </p:menuitem>
+                        </p:contextMenu>
+                        
+                        <p:confirmDialog header="Confirmación" global="true" showEffect="fade" hideEffect="fade">
+                            <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+                        </p:confirmDialog>  
+                    </h:form>
+                </div>
+            </div>
+            <h:form id="officeForm">
+                <p:growl id="msgsDialog" showDetail="true"/>
+                <p:dialog  widgetVar="dlg2" width="30%" id="officeDialog" header="#{i18n['system.office']}" modal="true" responsive="true" showEffect="clip" hideEffect="clip">
+                    <br></br>
+                    <h:panelGroup styleClass="md-inputfield" >
+                        <p:inputText id="name" value="#{officeManager.name}" autocomplete="off" required="true" requiredMessage="#{i18n['system.office.dialog.require.msg.name.empty']}" style="width: 100%;">
+                        </p:inputText>
+                        <label>#{i18n['system.office.datatable.column.name']}</label>
+                        <p:message for="name" display="text"/>
+                    </h:panelGroup>
+                    <br></br>
+                    <h:panelGroup styleClass="md-inputfield" >
+                        <p:inputText id="address" value="#{officeManager.address}" autocomplete="off" required="true" requiredMessage="#{i18n['system.office.dialog.require.msg.address.empty']}" style="width: 100%;">
+                        </p:inputText>
+                        <label>#{i18n['system.office.datatable.column.address']}</label>
+                        <p:message for="address" display="text"/>
+                    </h:panelGroup>
+                    <br></br>
+                    <div class="ui-g-12">
+                        <p:commandButton id="addButton" value="#{i18n['button.save']}"  actionListener="#{officeManager.addRow}" oncomplete="validNewObjectGeneric(xhr, status, args)" update=":form:dtOffice,msgsDialog,officeDialog"/>
+                    </div>
+                </p:dialog>
+            </h:form>
+        </div>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"https://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    
+    <query name="findAllAdvancesUserDailyByOffice">
+        <![CDATA[
+            SELECT 
+                t
+            FROM AdvanceUserDailyView t
+            WHERE office = :office               
+        ]]>
+    </query>
+    
+    <query name="sumAdvancesUserDailyByOffice">
+        <![CDATA[
+            SELECT 
+                SUM(t.paymentDaily + t.transferSender + t.transferReceiver + t.moneyDaily + t.otherExpense + t.delivery + t.transferPending)
+            FROM TotalCashByCurdateView t
+            WHERE idOffice = :idOffice               
+        ]]>
+    </query>
+
+</hibernate-mapping>

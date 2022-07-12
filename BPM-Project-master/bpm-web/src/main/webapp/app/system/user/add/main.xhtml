@@ -1,0 +1,264 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                template="/WEB-INF/template.xhtml">
+    <ui:define name="head">
+        <h:outputScript library="serenity-layout" name="js/calendar_es.js" />
+    </ui:define>
+
+    <ui:define name="title">#{i18n['project.short.name']} - #{i18n['system.users']}</ui:define>
+
+    <ui:define name="breadcrumb">
+        <li>#{i18n['system.title']}</li>
+        <li>/</li>
+        <li>#{i18n['system.users']}</li>
+        <li>/</li>
+        <li><p:link outcome="#{i18n['outcome.system.user.add']}">#{permission['system.user.create']}</p:link></li>
+    </ui:define>
+
+
+    <ui:define name="content">
+        <div class="ui-g ui-fluid">
+
+            <!-- Left Side -->
+            <div class="ui-g-12 ui-lg-7" style="display: #{loginBean.isUserInRole('system.user.create') ? 'block' : 'none'}">
+                <div class="card card-w-title">
+                    <h:form id="userCreateForm" rendered="#{loginBean.isUserInRole('system.user.create')}">
+                        <p:messages id="messages" severity="info, fatal, warn" closable="true" showSummary="true" showDetail="true"/>
+                        <h1>
+                            <h:outputFormat value="#{i18n['office.selected']}">
+                                <f:param value="#{userCreateBean.loggedUser.office.officeName}" />
+                            </h:outputFormat>
+                        </h1>
+                        <h4>#{i18n['user.create']}</h4>
+
+                        <p:panelGrid columns="3" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="existingUsersSlctPnlGrp" styleClass="md-inputfield">
+                                <p:selectOneMenu id="existingUsersSlct" 
+                                                 filter="true"
+                                                 filterMatchMode="contains"
+                                                 value="#{userCreateBean.idHRSelected}" 
+                                                 validator="selectOneMenuValidator"
+                                                 validatorMessage="#{i18n['role.choose.required']}">
+                                    <f:selectItem itemLabel="#{i18n['select.employee']}" itemValue="N/A" />
+                                    <f:selectItems 
+                                        value="#{userCreateBean.humanResourcesAvailables}" 
+                                        var="hrAvailable" 
+                                        itemValue="#{hrAvailable.id}" 
+                                        itemLabel="#{hrAvailable.firstName} #{hrAvailable.secondName} #{hrAvailable.lastName} #{hrAvailable.middleName}"/>
+                                </p:selectOneMenu>
+                                <p:message for="existingUsersSlct" display="icon"/>
+                            </h:panelGroup>
+                            <h:panelGroup id="userTypeSlctPnlGrp" styleClass="md-inputfield">
+                                <p:selectOneMenu id="userTypeSlct" 
+                                                 value="#{userCreateBean.userType}" 
+                                                 validator="selectOneMenuValidator"
+                                                 validatorMessage="#{i18n['user.type.required']}">
+                                    <p:ajax listener="#{userCreateBean.onUserTypeSlctChange}" 
+                                            update="certifier
+                                            routesPickListPnl
+                                            userCreatePermissionPnl" />
+                                    <f:selectItem itemLabel="Tipo usuario" itemValue="N/A" />
+                                    <f:selectItem itemLabel="Web" itemValue="WEB"/>
+                                    <f:selectItem itemLabel="Móvil" itemValue="MOBILE"/>
+                                    <f:selectItem itemLabel="Ambos" itemValue="BOTH"/>
+                                </p:selectOneMenu>
+                                <p:message for="userTypeSlct" display="icon"/>
+                            </h:panelGroup>
+                            <h:panelGroup id="certifierPnlGrp">
+                                <p:selectBooleanCheckbox 
+                                    value="#{userCreateBean.certifier}" 
+                                    id="certifier"
+                                    disabled="#{userCreateBean.userType eq null || userCreateBean.userType eq 'N/A' || userCreateBean.userType eq 'WEB'}">
+                                </p:selectBooleanCheckbox>Certificador
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="3" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="userNamePnlGrpMain" 
+                                          styleClass="md-inputfield">
+                                <div class="ui-inputgroup">
+                                    <h:panelGroup id="userNamePnlGrp" 
+                                                  styleClass="md-inputfield">
+                                        <p:inputText id="userName" style="width: 100%" 
+                                                     value="#{userCreateBean.user.userName}"
+                                                     autocomplete="off" 
+                                                     required="true"
+                                                     maxlength="#{userCreateBean.pwdMaxlength}"
+                                                     requiredMessage="#{i18n['require.msg.user.empty']}">
+                                            <p:ajax listener="#{userCreateBean.isUsernameAvailable()}"
+                                                    event="change"
+                                                    update="userNamePnlGrpMain"/>
+                                        </p:inputText>
+                                        <label>#{i18n['select.user']}</label>
+                                    </h:panelGroup>
+
+                                    <span class="ui-inputgroup-addon" 
+                                          style='color: #{userCreateBean.user.userName eq null or userCreateBean.user.userName.trim() eq "" ? "#757575" :(userCreateBean.availableUserName ? "blue": "red")}'>
+                                        <i class="material-icons">
+                                            #{userCreateBean.user.userName eq null or userCreateBean.user.userName.trim() eq "" ? 'thumbs_up_down' : (userCreateBean.availableUserName ? 'thumb_up': 'thumb_down')}
+                                        </i>
+                                    </span>
+                                </div>
+                                <p:message for="userName" display="icon" />
+                            </h:panelGroup>
+
+                            <h:panelGroup id="passwordPnlGrp"
+                                          styleClass="md-inputfield">
+                                <p:password id="password"
+                                            match="confirmPassword" 
+                                            label="#{i18n.password}" 
+                                            required="true" maxlength="#{userCreateBean.pwdMaxlength}"
+                                            inline="true" feedback="true"
+                                            value="#{userCreateBean.user.password}"
+                                            validatorMessage="#{i18n['pwd.match.passwords']}" 
+                                            requiredMessage="#{i18n['require.msg.password.empty']}"
+                                            promptLabel="#{i18n['pwd.promptLabel']}"
+                                            weakLabel="#{i18n['pwd.weakLabel']}"
+                                            goodLabel="#{i18n['pwd.goodLabel']}"
+                                            strongLabel="#{i18n['pwd.strongLabel']}"/>
+                                <label>#{i18n.password}</label>
+                                <p:message for="password" display="icon"/>
+                            </h:panelGroup>
+
+                            <h:panelGroup id="confirmPasswordPnlGrp"
+                                          styleClass="md-inputfield">
+                                <p:password id="confirmPassword" maxlength="15"
+                                            value="#{userCreateBean.pwdConfirm}"
+                                            requiredMessage="#{i18n['pwd.promptLabel.confirm']}."
+                                            label="#{i18n['pwd.promptLabel.confirm']}" 
+                                            required="true"/>
+                                <label>#{i18n['pwd.promptLabel.confirm']}</label>
+                                <p:message for="confirmPassword" display="icon"/>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <p:panelGrid id="userCreatePermissionPnl"
+                                     style="display: #{userCreateBean.userType eq 'WEB' or userCreateBean.userType eq 'BOTH' ? 'block' : 'none'}"
+                                     columns="1" layout="grid" 
+                                     styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="userCreatePermissionPnlGrp" styleClass="md-inputfield">
+                                <p:pickList id="userCreatePermissionPickList" 
+                                            value="#{userCreateBean.dualPermissionLst}" 
+                                            var="prmssn" 
+                                            itemLabel="#{permission[prmssn.permission]} #{permission[prmssn.menuPath]}"
+                                            itemValue="#{prmssn}"
+                                            showSourceFilter="true" 
+                                            showTargetFilter="true" 
+                                            filterMatchMode="contains" 
+                                            converter="genericConverter" 
+                                            responsive="true"
+                                            moveBottomLabel="#{i18n['pick.bottom']}" 
+                                            moveTopLabel="#{i18n['pick.top']}" 
+                                            moveDownLabel="#{i18n['pick.down']}" 
+                                            moveUpLabel="#{i18n['pick.up']}" 
+                                            required="#{userCreateBean.userType eq 'WEB' or userCreateBean.userType eq 'BOTH'}"
+                                            requiredMessage="#{i18n['dual.list.permissions.required']}"
+                                            addAllLabel="#{i18n['pick.add.all']}" 
+                                            addLabel="#{i18n['pick.add']}" 
+                                            removeAllLabel="#{i18n['pick.remove.all']}" 
+                                            removeLabel="#{i18n['pick.remove']}">
+                                    <f:facet name="sourceCaption">
+                                        <span style="color: #757575">
+                                            #{i18n['dual.list.permissions.available']}
+                                        </span>
+                                    </f:facet>
+                                    <f:facet name="targetCaption">
+                                        <span style="color: #757575">
+                                            #{i18n['dual.list.permissions.taken']}
+                                        </span>
+                                    </f:facet>
+
+                                    <p:column style="width:100%;">  
+                                        <h:panelGroup styleClass="md-inputfield" style="color: #000000">
+                                            <span>
+                                                #{i18n.screen}:  
+                                            </span>
+                                            <h:outputText value="#{permission[prmssn.menuPath]}" title="#{permission[prmssn.description]}" />
+                                        </h:panelGroup>
+                                        <h:panelGroup styleClass="md-inputfield" style="color: #004085">
+                                            <span>
+                                                #{i18n.permission}: 
+                                            </span>
+                                            <h:outputText value="#{permission[prmssn.permission]}" title="#{permission[prmssn.description]}" />
+                                        </h:panelGroup>
+                                    </p:column>
+                                </p:pickList>
+                                <p:message for="userCreatePermissionPickList" display="icon"/>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <p:panelGrid id="routesPickListPnl"
+                                     style="display: #{userCreateBean.userType eq 'MOBILE' or userCreateBean.userType eq 'BOTH' ? 'block' : 'none'}"
+                                     columns="1" layout="grid" 
+                                     styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="routesPnlGrp" styleClass="md-inputfield">
+                                <p:pickList id="routesPickList" 
+                                            value="#{userCreateBean.dualRouteCtlgLst}" 
+                                            var="routeVar" 
+                                            itemLabel="#{routeVar.route}"
+                                            itemValue="#{routeVar}"
+                                            showSourceFilter="true" 
+                                            showTargetFilter="true" 
+                                            filterMatchMode="contains" 
+                                            converter="genericConverter" 
+                                            responsive="true"
+                                            moveBottomLabel="#{i18n['pick.bottom']}" 
+                                            moveTopLabel="#{i18n['pick.top']}" 
+                                            moveDownLabel="#{i18n['pick.down']}" 
+                                            moveUpLabel="#{i18n['pick.up']}" 
+                                            required="#{(userCreateBean.userType eq 'MOBILE' or userCreateBean.userType eq 'BOTH' ) and userCreateBean.dualRouteCtlgLst.source.size() > 0}"
+                                            requiredMessage="#{i18n['dual.list.routes.required']}"
+                                            addAllLabel="#{i18n['pick.add.all']}" 
+                                            addLabel="#{i18n['pick.add']}" 
+                                            removeAllLabel="#{i18n['pick.remove.all']}" 
+                                            removeLabel="#{i18n['pick.remove']}">
+                                    <f:facet name="sourceCaption">
+                                        <span style="color: #757575">
+                                            #{i18n['dual.list.routes.available']}
+                                        </span>
+                                    </f:facet>
+                                    <f:facet name="targetCaption">
+                                        <span style="color: #757575">
+                                            #{i18n['dual.list.routes.taken']}
+                                        </span>
+                                    </f:facet>
+                                </p:pickList>
+                                <p:message for="routesPickList" display="icon"/>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:commandButton id="userCreateBtn"
+                                                 update="userCreateForm
+                                                 confirmForm:globalConfirmMsg 
+                                                 messages"
+                                                 disabled="#{userCreateBean.humanResourcesAvailables.size() eq 0}"
+                                                 value="#{i18n['user.create']}"
+                                                 action="#{userCreateBean.saveUser()}"
+                                                 rendered="#{loginBean.isUserInRole('system.user.create')}">
+                                    <p:confirm header="#{i18n['user.confirm.header']}" 
+                                               message="#{i18n['user.confirm.question']}" 
+                                               icon="ui-icon-person"/>
+                                </p:commandButton>
+                            </h:panelGroup>
+                        </p:panelGrid>
+                    </h:form>
+                </div>
+            </div>
+
+            <!-- Popup -->
+            <h:form id="confirmForm">
+                <p:confirmDialog id="globalConfirmMsg" global="true" showEffect="clip" hideEffect="clip">
+                    <p:commandButton value="#{i18n['confirm.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="#{i18n['confirm.no']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog> 
+            </h:form>
+        </div>
+    </ui:define>
+
+</ui:composition>

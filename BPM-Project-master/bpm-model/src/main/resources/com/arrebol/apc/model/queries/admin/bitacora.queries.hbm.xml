@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"https://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    
+    <query name="findAllBitacoraByOffice">
+        <![CDATA[
+            SELECT 
+                t
+            FROM Bitacora t 
+                WHERE office = :office
+            ORDER BY createdOn DESC
+        ]]>
+    </query> 
+    
+    <query name="findAllBitacoraByOfficeDate">
+        <![CDATA[
+            SELECT 
+                t
+            FROM Bitacora t 
+                WHERE office = :office
+                AND DATE(created_on) >= DATE(:startDate) 
+                AND DATE(:endDate) >= DATE(created_on)
+            ORDER BY createdOn DESC
+        ]]>
+    </query> 
+    
+</hibernate-mapping>

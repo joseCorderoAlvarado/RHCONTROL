@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"https://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    
+    <query name="findAllMoneyDailyByOffice">
+        <![CDATA[
+            SELECT 
+                m
+            FROM MoneyDaily m 
+                WHERE office = :office
+            ORDER BY createdOn DESC
+        ]]>
+    </query> 
+    
+    <query name="findAllMoneyDailyByOfficeBetweenDates">
+        <![CDATA[
+            SELECT 
+                m
+            FROM MoneyDaily m 
+                WHERE 
+                    m.office = :office AND
+                    DATE(m.createdOn) >= DATE(:startDate) AND 
+                    DATE(:endDate) >= DATE(m.createdOn)
+            ORDER BY m.createdOn DESC
+        ]]>
+    </query> 
+    
+</hibernate-mapping>

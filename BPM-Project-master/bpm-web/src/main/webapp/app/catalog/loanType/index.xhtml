@@ -1,0 +1,116 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+    <ui:define name="title">#{i18n['project.short.name']} - #{permission['catalog.typeLoan']}</ui:define>
+    <ui:define name="head">
+        <h:outputScript library="js" name="scriptGeneric/dialogGeneric.js" />
+    </ui:define>
+    <ui:define name="breadcrumb">
+        <li>#{i18n['catalog.title']}</li>
+        <li>/</li>
+        <li><p:link outcome="#{i18n['outcome.catalog.typeLoan']}">#{permission['catalog.typeLoan']}</p:link></li>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="ui-g">
+            <div class="ui-g-12">
+                <div class="card card-w-title">
+                    <h1>#{i18n['catalog.typeLoan']}</h1>
+                    <h:form id="form" rendered="#{loginBean.isUserInRole('catalog.typeLoan')}">
+                        <p:growl id="msgs" showDetail="true"/>
+
+                        <p:dataTable widgetVar="dtLoanType" id="dtLoanType" var="loanType" draggableRows="true" draggableColumns="true" value="#{loanTypeManager.loanType}" style="margin-bottom:20px" reflow="true" rowsPerPageTemplate="5,10,25,50,100" emptyMessage="#{i18n['catalog.loanTypes.datatable.empty']}"
+                                     rowKey="#{loanType.id}" selection="#{loanTypeManager.selectedLoanType}" editable="true" selectionMode="single" paginator="true" rows="10" paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
+
+                            <f:facet name="header">
+                                <p:commandButton id="toggler" type="button" value="Columnas" style="float:left;" styleClass="amber-btn flat" icon="ui-icon-calendar"/>
+                                <p:columnToggler datasource="dtLoanType" trigger="toggler" />
+                                <p:button outcome="#{i18n['outcome.catalog.typeLoan.add']}" value="#{i18n['button.add']}" styleClass="amber-btn flat" style="float: right;" icon="ui-icon-plus" rendered="#{loginBean.isUserInRole('catalog.typeLoan.add')}"/>
+
+                                <p:outputPanel>
+                                    <h:outputText value="#{i18n['general.search']}: " />
+                                    <p:inputText id="globalFilter" onkeyup="PF('dtLoanType').filter()" style="width:150px;color: #000000;"/>
+                                </p:outputPanel>
+                            </f:facet>
+
+                            <p:ajax event="rowEdit" listener="#{loanTypeManager.editRow}" update=":form:msgs" />
+                            <p:ajax event="rowEditCancel" listener="#{loanTypeManager.onRowCancel}" update=":form:msgs" />
+                            <p:ajax event="rowReorder" listener="#{loanTypeManager.onRowReorder}" update=":form:msgs" />
+
+                            <p:column headerText="#{i18n['catalog.loanTypes.datatable.column.name']}" sortBy="#{loanType.loanTypeName}" filterBy="#{loanType.loanTypeName}">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{loanType.loanTypeName}" /></f:facet>
+                                    <f:facet name="input"><p:inputText id="id_loanTypeName" value="#{loanType.loanTypeName}" required="true" requiredMessage="Valor Obligatorio" style="width:100%; color: #000000;"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            
+                            <p:column headerText="#{i18n['catalog.loanTypes.datatable.column.totalDays']}" sortBy="#{loanType.totalDays}" filterBy="#{loanType.totalDays}">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{loanType.totalDays}" /></f:facet>
+                                    <f:facet name="input"><p:inputText id="id_totalDays" value="#{loanType.totalDays}" required="true" requiredMessage="Valor Obligatorio" style="width:100%; color: #000000;"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            
+                            <p:column headerText="#{i18n['catalog.loanTypes.datatable.column.payment']}" sortBy="#{loanType.payment}" filterBy="#{loanType.payment}">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{loanType.payment}" /></f:facet>
+                                    <f:facet name="input"><p:inputText id="id_payment" value="#{loanType.payment}" required="true" requiredMessage="Valor Obligatorio" style="width:100%; color: #000000;"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            
+                            <p:column headerText="#{i18n['catalog.loanTypes.datatable.column.fee']}" sortBy="#{loanType.fee}" filterBy="#{loanType.fee}">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{loanType.fee}" /></f:facet>
+                                    <f:facet name="input"><p:inputText id="id_fee" value="#{loanType.fee}" required="true" requiredMessage="Valor Obligatorio" style="width:100%; color: #000000;"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            
+                            <p:column headerText="#{i18n['catalog.loanTypes.datatable.column.paymentDaily']}" sortBy="#{loanType.paymentDaily}" filterBy="#{loanType.paymentDaily}">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{loanType.paymentDaily}" /></f:facet>
+                                    <f:facet name="input"><p:inputText id="id_paymentDaily" value="#{loanType.paymentDaily}" required="true" requiredMessage="Valor Obligatorio" style="width:100%; color: #000000;"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            
+                            <p:column headerText="#{i18n['catalog.loanTypes.datatable.column.paymentTotal']}" sortBy="#{loanType.paymentTotal}" filterBy="#{loanType.paymentTotal}">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{loanType.paymentTotal}" /></f:facet>
+                                    <f:facet name="input"><p:inputText id="id_paymentTotal" value="#{loanType.paymentTotal}" required="true" requiredMessage="Valor Obligatorio" style="width:100%; color: #000000;"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            
+                            <p:column headerText="#{i18n['catalog.loanTypes.datatable.column.openingFee']}" sortBy="#{loanType.openingFee}" filterBy="#{loanType.openingFee}">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{loanType.openingFee}" /></f:facet>
+                                    <f:facet name="input"><p:inputText id="id_openingFee" value="#{loanType.openingFee}" required="true" requiredMessage="Valor Obligatorio" style="width:100%; color: #000000;"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column style="width:40px" headerText="Editar">
+
+                                <p:rowEditor editTitle="#{i18n['button.edit']}" rendered="#{loginBean.isUserInRole('catalog.typeLoan.updated')}"/>
+
+                            </p:column>
+
+                        </p:dataTable>
+
+                        <p:contextMenu for="dtLoanType" rendered="#{loginBean.isUserInRole('catalog.typeLoan.deleted')}">
+                            <p:menuitem value="Borrar" update="dtLoanType,:form:msgs" icon="ui-icon-close" actionListener="#{loanTypeManager.deleteRow}">
+                                <p:confirm message="#{i18n['general.confirm.confirm']}"  /> 
+                            </p:menuitem>
+                        </p:contextMenu>
+                        
+                        <p:confirmDialog header="Confirmación" global="true" showEffect="fade" hideEffect="fade">
+                            <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+                        </p:confirmDialog> 
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

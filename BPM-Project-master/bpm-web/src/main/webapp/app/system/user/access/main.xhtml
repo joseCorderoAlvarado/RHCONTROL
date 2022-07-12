@@ -1,0 +1,172 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">#{i18n['project.short.name']} - #{i18n['system.users']}</ui:define>
+
+    <ui:define name="breadcrumb">
+        <li>#{i18n['system.title']}</li>
+        <li>/</li>
+        <li>#{i18n['system.users']}</li>
+        <li>/</li>
+        <li><p:link outcome="#{i18n['outcome.system.user.access']}">#{permission['system.user.access']}</p:link></li>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="ui-g ui-fluid">
+            <div class="ui-g-12" style="display: #{loginBean.isUserInRole('system.user.access') ? 'block' : 'none'}">
+                <div class="card card-w-title">
+                    <h:form id="selectUserForm" rendered="#{loginBean.isUserInRole('system.user.access')}">
+                        <p:messages id="messages" severity="info, fatal, warn" closable="true" showSummary="true" showDetail="true"/>
+                        <h1>
+                            <h:outputFormat value="#{i18n['office.selected']}">
+                                <f:param value="#{userAccessBean.loggedUser.office.officeName}" />
+                            </h:outputFormat>
+                        </h1>
+                        <h4>#{i18n['access.updte']}</h4>
+
+                        <div class="ui-g-12 ui-lg-4">
+                            <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+
+                                <h:panelGroup id="existingUsersSlctPnlGrp" styleClass="md-inputfield">
+                                    <p:selectOneMenu id="existingUsersSlct" 
+                                                     filter="true"
+                                                     filterMatchMode="contains"
+                                                     value="#{userAccessBean.userByOfficeId}" 
+                                                     validator="selectOneMenuValidator"
+                                                     validatorMessage="#{i18n['user.required']}">
+                                        <f:selectItem itemLabel="#{i18n['select.user']}" itemValue="N/A"/>
+                                        <f:selectItems var="ubo" 
+                                                       value="#{userAccessBean.userByOfficeLst}"
+                                                       itemValue="#{ubo.id}" 
+                                                       itemLabel="#{ubo.user.userName}"/>
+                                        <p:ajax listener="#{userAccessBean.dropBoxOnchange()}"
+                                            update="userDetailsForm messages"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="existingUsersSlct" display="icon"/>
+                                </h:panelGroup>
+
+                                <h:panelGroup styleClass="md-inputfield">
+                                    <p:commandButton update="existingUsersSlctPnlGrp userDetailsForm messages"
+                                                     value="#{i18n['load.user.access']}" 
+                                                     style="margin-bottom:10px;"
+                                                     action="#{userAccessBean.loadUserByOfficePermissionLst()}">
+                                        <p:confirm header="#{i18n.user}" 
+                                                   message="#{i18n['user.load.permission']}" 
+                                                   icon="ui-icon-person"/>
+                                    </p:commandButton>
+                                </h:panelGroup>
+                            </p:panelGrid>
+                        </div>
+                    </h:form>
+
+                    <h:form id="userDetailsForm">
+                        <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:inputText readonly="true" value="#{userAccessBean.hr.firstName}"/>
+                                <label>#{i18n['first.name']}</label>
+                            </h:panelGroup>
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:inputText readonly="true" value="#{userAccessBean.hr.secondName}"/>
+                                <label>#{i18n['second.name']}</label>
+                            </h:panelGroup>
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:inputText readonly="true" value="#{userAccessBean.hr.lastName}"/>
+                                <label>#{i18n['last.name']}</label>
+                            </h:panelGroup>
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:inputText readonly="true" value="#{userAccessBean.hr.middleName}"/>
+                                <label>#{i18n['middle.name']}</label>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <p:panelGrid id="userUpdatePermissionPickListPnl"
+                                     columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="firstNamePnlGrp" styleClass="md-inputfield">
+                                <p:pickList id="userUpdatePermissionPickList" 
+                                            value="#{userAccessBean.dualPermissionLst}" 
+                                            var="prmssn" 
+                                            itemLabel="#{permission[prmssn.permission]} #{permission[prmssn.menuPath]}"
+                                            itemValue="#{prmssn}"
+                                            showSourceFilter="true" 
+                                            showTargetFilter="true" 
+                                            filterMatchMode="contains" 
+                                            converter="genericConverter" 
+                                            responsive="true"
+                                            moveBottomLabel="#{i18n['pick.bottom']}" 
+                                            moveTopLabel="#{i18n['pick.top']}" 
+                                            moveDownLabel="#{i18n['pick.down']}" 
+                                            moveUpLabel="#{i18n['pick.up']}" 
+                                            required="true"
+                                            requiredMessage="#{i18n['dual.list.permissions.required']}"
+                                            addAllLabel="#{i18n['pick.add.all']}" 
+                                            addLabel="#{i18n['pick.add']}" 
+                                            removeAllLabel="#{i18n['pick.remove.all']}" 
+                                            removeLabel="#{i18n['pick.remove']}"
+                                            disabled="#{!userAccessBean.updateForm}">
+                                    <f:facet name="sourceCaption">
+                                        <span style="color: #757575">
+                                            #{i18n['dual.list.permissions.available']}
+                                        </span>
+                                    </f:facet>
+                                    <f:facet name="targetCaption">
+                                        <span style="color: #757575">
+                                            #{i18n['dual.list.permissions.taken']}
+                                        </span>
+                                    </f:facet>
+
+                                    <p:column style="width:100%;">  
+                                        <h:panelGroup styleClass="md-inputfield" style="color: #000000">
+                                            <span>
+                                                #{i18n.screen}:  
+                                            </span>
+                                            <h:outputText value="#{permission[prmssn.menuPath]}" title="#{permission[prmssn.description]}" />
+                                        </h:panelGroup>
+                                        <h:panelGroup styleClass="md-inputfield" style="color: #004085">
+                                            <span>
+                                                #{i18n.permission}: 
+                                            </span>
+                                            <h:outputText value="#{permission[prmssn.permission]}" title="#{permission[prmssn.description]}" />
+                                        </h:panelGroup>
+                                    </p:column>
+
+                                </p:pickList>
+                                <p:message for="userUpdatePermissionPickList" display="icon"/>
+                            </h:panelGroup>
+
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:commandButton id="permissionBtn"
+                                                 update="userUpdatePermissionPickListPnl 
+                                                 userUpdatePermissionPickList 
+                                                 selectUserForm:messages
+                                                 confirmForm:globalConfirmMsg
+                                                 selectUserForm:existingUsersSlctPnlGrp"
+                                                 disabled="#{!userAccessBean.updateForm}"
+                                                 action="#{userAccessBean.savePermission()}"
+                                                 value="#{i18n['permission.update.btn']}"
+                                                 rendered="#{loginBean.isUserInRole('system.user.access')}">
+                                    <p:confirm header="#{i18n['permission.confirm.header']}" 
+                                               message="#{i18n['permission.confirm.question']}" 
+                                               icon="ui-icon-person"/>
+                                </p:commandButton>
+                            </h:panelGroup>
+                        </p:panelGrid>
+                    </h:form>
+                </div>
+            </div>
+
+            <!-- Popup -->
+            <h:form id="confirmForm">
+                <p:confirmDialog id="globalConfirmMsg" global="true" showEffect="clip" hideEffect="clip">
+                    <p:commandButton value="#{i18n['confirm.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="#{i18n['confirm.no']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog> 
+            </h:form>
+        </div>
+    </ui:define>
+
+</ui:composition>

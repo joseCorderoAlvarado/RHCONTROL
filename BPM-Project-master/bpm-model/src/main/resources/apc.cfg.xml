@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property name="hibernate.connection.url">${hibernate.connection.url}</property>
+        <property name="hibernate.connection.username">${hibernate.connection.username}</property>
+        <property name="hibernate.connection.password">${hibernate.connection.password}</property>
+        <property name="hibernate.c3p0.min_size">${hibernate.connection.min_size}</property>
+        <property name="hibernate.c3p0.max_size">${hibernate.connection.max_size}</property>
+        <property name="hibernate.c3p0.timeout">${hibernate.connection.timeout}</property>
+        <property name="hibernate.c3p0.max_statements">${hibernate.connection.max_statements}</property>
+        <property name="hibernate.c3p0.idle_test_period">3000</property>
+        <property name="hibernate.show_sql">false</property>
+        <property name="hibernate.format_sql">false</property>
+        <property name="hibernate.enable_lazy_load_no_trans">true</property>
+        <property name="hibernate.current_session_context_class">thread</property>
+        <!-- ERROR PACKAGE -->
+        <mapping class="com.arrebol.apc.model.system.logs.ErrorAppLog"/>
+        <mapping class="com.arrebol.apc.model.system.logs.Bitacora"/>
+        <!-- CORE PACKAGE -->
+        <mapping class="com.arrebol.apc.model.core.HumanResource"/>
+        <mapping class="com.arrebol.apc.model.core.HumanResourceByOffice"/>
+        <mapping class="com.arrebol.apc.model.core.Office"/>
+        <mapping class="com.arrebol.apc.model.core.User"/>
+        <mapping class="com.arrebol.apc.model.core.UserByOffice"/>
+        <mapping class="com.arrebol.apc.model.core.Permission"/>
+        <mapping class="com.arrebol.apc.model.core.UserByOfficeHasPermission"/>
+        <mapping class="com.arrebol.apc.model.core.Bonus"/>
+        <!-- CATALOG PACKAGE -->
+        <mapping class="com.arrebol.apc.model.catalog.RoleCtlg"/>
+        <mapping class="com.arrebol.apc.model.catalog.RouteCtlg"/>
+        <mapping class="com.arrebol.apc.model.catalog.People"/>
+        <mapping class="com.arrebol.apc.model.catalog.HumanResourceHasRoute"/>
+        <!-- VIEWS -->
+        <mapping class="com.arrebol.apc.model.views.AdministrationPersonSerchView"/>
+        <mapping class="com.arrebol.apc.model.views.PersonSearchView"/>
+        <mapping class="com.arrebol.apc.model.views.PersonSearchDetailView"/>
+        <mapping class="com.arrebol.apc.model.views.AvailableCustomersView"/>
+        <mapping class="com.arrebol.apc.model.views.AvailableEndorsementsView"/>
+        <mapping class="com.arrebol.apc.model.views.CashRegisterCurdateByUserView"/>
+        <mapping class="com.arrebol.apc.model.views.ExchangeEnebledUsersView"/>
+        <mapping class="com.arrebol.apc.model.views.PersonSearchHistoricalDetailsView"/>
+        <mapping class="com.arrebol.apc.model.views.AvailablesOwnersView"/>
+        <mapping class="com.arrebol.apc.model.views.EnabledUserDetailsView"/>
+        <!-- REPORTS -->
+        <mapping class="com.arrebol.apc.model.reports.UserWeekReport"/>
+        <!-- QUERIES -->
+        <mapping resource="com/arrebol/apc/model/queries/core/user.queries.hbm.xml"/>
+        <mapping resource="com/arrebol/apc/model/queries/core/user.by.office.queries.hbm.xml"/>
+        <mapping resource="com/arrebol/apc/model/queries/core/office.queries.hbm.xml"/>
+        <mapping resource="com/arrebol/apc/model/queries/core/user.by.office.has.permission.queries.hbm.xml"/>
+        <mapping resource="com/arrebol/apc/model/queries/core/human.resource.queries.hbm.xml"/>
+        <mapping resource="com/arrebol/apc/model/queries/core/permission.queries.hbm.xml"/>
+        <mapping resource="com/arrebol/apc/model/catalog/queries/people.queries.hbm.xml"/>
+        <mapping resource="com/arrebol/apc/model/catalog/queries/roles.queries.hbm.xml"/>
+        <mapping resource="com/arrebol/apc/model/queries/admin/bitacora.queries.hbm.xml"/>
+        <mapping resource="com/arrebol/apc/model/queries/view/administration.person.serch.view.xml" />
+        <mapping resource="com/arrebol/apc/model/queries/view/enabled.user.details.view.hbm.xml" />
+    </session-factory>
+</hibernate-configuration>

@@ -1,0 +1,530 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                template="/WEB-INF/template.xhtml">
+    <ui:define name="head">
+        <h:outputScript library="serenity-layout" name="js/calendar_es.js" />
+    </ui:define>
+
+    <ui:define name="title">#{i18n['project.short.name']} - #{permission['admin.loan']}</ui:define>
+
+    <ui:define name="breadcrumb">
+        <li>#{i18n['admin.loan.detail.title']}</li>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:tabView id="tabMain">
+            <p:tab title="Información del cliente" id="refrescar">
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12">
+                        <!-- Top center -->
+                        <div class="ui-g-6" style="display: 'block'">
+                            <div class="card card-w-title">
+                                <h:form id="panelPersonaDetail">
+                                    <!-- TITLE for this FORM-->
+
+                                    <h2>#{i18n['admin.customers.detail.title']}</h2>
+                                    <br></br>
+                                    <!-- CONTENT for this FORM-->
+                                    <h:panelGroup id="fullNamePnlGrp" styleClass="md-inputfield">
+                                        <p:inputText id="fullName" 
+                                                     style="width: 100%"
+                                                     value="#{loanDetailManager.customer.fullName}"
+                                                     autocomplete="off"
+                                                     readonly="true">
+                                        </p:inputText>
+                                        <label>#{i18n['admin.customers.detail.field.name']}</label>
+                                    </h:panelGroup>
+                                    <br></br><br></br>
+                                    <h:panelGroup id="birthdatePnlGrp" styleClass="md-inputfield">
+                                        <p:inputText id="birthdate" 
+                                                     style="width: 100%" 
+                                                     value="#{loanDetailManager.customer.birthdate}"
+                                                     autocomplete="off" 
+                                                     readonly="true"
+                                                     />
+                                        <label>#{i18n['admin.customers.detail.field.birthdate']}</label>
+                                    </h:panelGroup>
+                                    <br></br><br></br>
+                                    <h:panelGroup id="phoneHomePnlGrp" styleClass="md-inputfield">
+                                        <p:inputText id="phoneHome" 
+                                                     style="width: 100%" 
+                                                     value="#{loanDetailManager.customer.phoneHome}"
+                                                     autocomplete="off" 
+                                                     readonly="true"
+                                                     />
+                                        <label>#{i18n['admin.customers.detail.field.phoneHome']}</label>
+                                    </h:panelGroup>
+                                    <br></br><br></br>
+                                    <h:panelGroup id="addressHomePnlGrp" styleClass="md-inputfield">
+                                        <p:inputText id="addressHome" 
+                                                     style="width: 100%" 
+                                                     value="#{loanDetailManager.customer.addressHome}"
+                                                     autocomplete="off" 
+                                                     readonly="true"
+                                                     />
+                                        <label>#{i18n['admin.customers.detail.field.addressHome']}</label>
+                                    </h:panelGroup>
+                                    <br></br><br></br>
+                                    <h:panelGroup id="peopleTypePnlGrp" styleClass="md-inputfield">
+                                        <p:inputText id="peopleType" 
+                                                     style="width: 100%" 
+                                                     value="#{loanDetailManager.customer.peopleType.getValue()}"
+                                                     autocomplete="off" 
+                                                     readonly="true"
+                                                     />
+                                        <label>#{i18n['admin.customers.detail.field.peopleType']}</label>
+                                    </h:panelGroup>
+                                    <br></br><br></br>
+                                    <h:panelGroup id="routeCtlgPnlGrp" styleClass="md-inputfield">
+                                        <p:inputText id="routeCtlg" 
+                                                     style="width: 100%" 
+                                                     value="#{loanDetailManager.customer.routeCtlg.route}"
+                                                     autocomplete="off" 
+                                                     readonly="true"
+                                                     />
+                                        <label>#{i18n['admin.customers.detail.field.routeCtlg']}</label>
+                                    </h:panelGroup>
+
+                                </h:form>
+                            </div>
+                        </div>
+                        <div class="ui-g-6">
+                            <div class="card card-w-title">
+                                <h:form id="panelPersonCompany">
+                                    <!-- TITLE for this FORM-->
+
+                                    <h2>#{i18n['admin.customers.company.title']}</h2>
+                                    <br></br>
+                                    <!-- CONTENT for this FORM-->
+                                    <h:panelGroup id="companyNamePnlGrp" styleClass="md-inputfield">
+                                        <p:inputText id="companyName" 
+                                                     style="width: 100%"
+                                                     value="#{loanDetailManager.customer.companyName}"
+                                                     autocomplete="off"
+                                                     readonly="true">
+                                        </p:inputText>
+                                        <label>#{i18n['admin.customers.detail.field.companyName']}</label>
+                                    </h:panelGroup>
+                                    <br></br><br></br>
+                                    <h:panelGroup id="phoneBusinessPnlGrp" styleClass="md-inputfield">
+                                        <p:inputText id="phoneBusiness" 
+                                                     style="width: 100%" 
+                                                     value="#{loanDetailManager.customer.phoneBusiness}"
+                                                     autocomplete="off" 
+                                                     readonly="true"
+                                                     />
+                                        <label>#{i18n['admin.customers.detail.field.phoneBusiness']}</label>
+                                    </h:panelGroup>
+                                    <br></br><br></br>
+                                    <h:panelGroup id="addressBusinessPnlGrp" styleClass="md-inputfield">
+                                        <p:inputText id="addressBusiness" 
+                                                     style="width: 100%" 
+                                                     value="#{loanDetailManager.customer.addressBusiness}"
+                                                     autocomplete="off" 
+                                                     readonly="true"
+                                                     />
+                                        <label>#{i18n['admin.customers.detail.field.addressBusiness']}</label>
+                                    </h:panelGroup>
+
+                                </h:form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ui-g-12">
+                        <!-- Top center -->
+                        <div class="ui-g-12" style="display: 'block'">
+                            <div class="card card-w-title">
+                                <h:form id="formLoan">
+                                    <h2>#{i18n['admin.customers.loan.title']}</h2>
+                                    <p:growl id="msgs" showDetail="true"/>
+                                    <p:dataTable widgetVar="dtloan2" 
+                                                 id="dtloan2" 
+                                                 var="loan" 
+                                                 selectionMode="single" 
+                                                 value="#{loanDetailManager.loanCustomer}" 
+                                                 selection="#{loanDetailManager.selectedLoanCustomer}"
+                                                 style="margin-bottom:20px" 
+                                                 reflow="true" 
+                                                 rowsPerPageTemplate="5,10,25,50,100" 
+                                                 emptyMessage="#{i18n['admin.customers.detail.datatable.empty']}"
+                                                 rowKey="#{loan.id}" 
+                                                 paginator="true" 
+                                                 rows="10" 
+                                                 paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
+
+                                        <f:facet name="header"> 
+
+                                            <p:outputPanel>
+                                                <h:outputText value="#{i18n['general.search']}: " />
+                                                <p:inputText id="globalFilter" onkeyup="PF('dtloan2').filter()" style="width:150px;color: #000000;"/>
+                                            </p:outputPanel>
+                                        </f:facet>
+
+                                        <p:column style="width:16px">
+                                            <p:rowToggler/>
+                                        </p:column>
+
+                                        <p:column headerText="#{i18n['admin.customers.detail.datatable.column.endorsement']}" sortBy="#{loan.endorsement.fullName}" filterBy="#{loan.endorsement.fullName}">
+                                            <h:outputText value="#{loan.endorsement.fullName}" />
+                                        </p:column>
+                                        <p:column headerText="#{i18n['admin.customers.detail.datatable.column.loanStatus']}" sortBy="#{loan.loanStatus.value}" filterBy="#{loan.loanStatus.value}">
+                                            <h:outputText value="#{loan.loanStatus.value}" />
+                                        </p:column>
+                                        <p:column headerText="#{i18n['admin.customers.detail.datatable.column.amountToPay']}" sortBy="#{loan.amountToPay}" filterBy="#{loan.amountToPay}">
+                                            <h:outputText value="#{loan.amountToPay}">
+                                                <f:convertNumber pattern="¤#,##0.00" locale="en_US" currencySymbol="$" />
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column headerText="#{i18n['admin.customers.detail.datatable.column.amountPaid']}" sortBy="#{loan.amountPaid}" filterBy="#{loan.amountPaid}">
+                                            <h:outputText value="#{loan.amountPaid}">
+                                                <f:convertNumber pattern="¤#,##0.00" locale="en_US" currencySymbol="$" />
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column headerText="Saldo insoluto" sortBy="#{loan.amountToPay - loan.amountPaid}" filterBy="#{loan.amountToPay - loan.amountPaid}">
+                                            <h:outputText value="#{loan.amountToPay - loan.amountPaid}">
+                                                <f:convertNumber pattern="¤#,##0.00" locale="en_US" currencySymbol="$" />
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column headerText="#{i18n['admin.customers.detail.datatable.column.routeCtlg']}" sortBy="#{loan.routeCtlg.route}" filterBy="#{loan.routeCtlg.route}">
+                                            <h:outputText value="#{loan.routeCtlg.route}" />
+                                        </p:column>
+                                        <p:column headerText="#{i18n['admin.customers.detail.datatable.column.createdOn']}" sortBy="#{loan.createdOn}" filterBy="#{loan.createdOn}">
+                                            <h:outputText value="#{loan.createdOn}">
+                                                <f:convertDateTime type="date" locale="es" pattern="dd - MMMM - yyyy"/>
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column headerText="#{i18n['admin.customers.detail.datatable.column.comments']}" sortBy="#{loan.comments}" filterBy="#{loan.comments}">
+                                            <h:outputText value="#{loan.comments}" />
+                                        </p:column>
+                                        <p:column headerText="#{i18n['admin.customers.detail.datatable.column.totalFee']}" sortBy="#{loan.totalFeeByLoan}" filterBy="#{loan.totalFeeByLoan}">
+                                            <h:outputText value="#{loan.totalFeeByLoan}" />
+                                        </p:column>
+
+                                        <p:rowExpansion>
+                                            <div class="ui-g ui-fluid">
+                                                <div class="ui-g-12">
+                                                    <div class="ui-g-12">
+                                                        <!-- Top center -->
+                                                        <div class="ui-g-12">
+                                                            <div class="card card-w-title">
+                                                                <p:panelGrid style="margin-top:20px; margin-bottom: 20px;">
+                                                                    <f:facet name="header">
+                                                                        <p:row>
+                                                                            <p:column colspan="5" style="background-color: #00695C;">Detalle de pagos</p:column>
+                                                                        </p:row>
+
+                                                                        <p:row>
+                                                                            <p:column colspan="1" class="ui-paginator ui-paginator-top ui-widget-header">Fecha</p:column>
+                                                                            <p:column colspan="1" class="ui-paginator ui-paginator-top ui-widget-header">Pago</p:column>
+                                                                            <p:column colspan="1" class="ui-paginator ui-paginator-top ui-widget-header">Saldo insoluto</p:column>
+                                                                            <p:column colspan="1" class="ui-paginator ui-paginator-top ui-widget-header">Tipo</p:column>
+                                                                            <p:column colspan="1" class="ui-paginator ui-paginator-top ui-widget-header">No. Referencia</p:column>
+                                                                            <p:column colspan="1" class="ui-paginator ui-paginator-top ui-widget-header">Comentarios</p:column>
+                                                                        </p:row>
+
+                                                                    </f:facet>
+
+                                                                    <p:repeat value="#{loanDetailManager.getDetails(loan.id)}" var="detail">
+
+                                                                        <p:row>
+                                                                            <p:column style="font-weight: bold;text-align: center;">
+                                                                                <h:outputText value="#{detail.createdOn}">
+                                                                                    <f:convertDateTime type="date" locale="es" timeZone="GMT-6" pattern="dd - MMMM - yyyy hh:mm:ss"/>
+                                                                                </h:outputText>
+                                                                            </p:column>
+                                                                            <p:column style="font-weight: bold;">
+                                                                                <h:outputText value="#{detail.paymentAmount}">
+                                                                                    <f:convertNumber pattern="¤#,##0.00" locale="en_US" currencySymbol="$" />
+                                                                                </h:outputText>
+                                                                            </p:column>
+                                                                            <p:column style="font-weight: bold;">
+                                                                                <h:outputText value="#{detail.saldoInsoluto}">
+                                                                                    <f:convertNumber pattern="¤#,##0.00" locale="en_US" currencySymbol="$" />
+                                                                                </h:outputText>
+                                                                            </p:column>
+                                                                            <p:column style="font-weight: bold;">#{detail.loanDetailsType.value}</p:column>
+                                                                            <p:column style="font-weight: bold;">#{detail.referenceNumber}</p:column>
+                                                                            <p:column style="font-weight: bold;text-align: center;">#{detail.comments}</p:column>
+                                                                        </p:row>
+
+                                                                    </p:repeat>
+
+                                                                </p:panelGrid>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </p:rowExpansion>
+
+                                    </p:dataTable>
+                                </h:form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </p:tab>
+            <p:tab title="Información del aval" id="refrescarAval">
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12">
+                        <!-- Top center -->
+                        <div class="ui-g-6" style="display: 'block'">
+                            <div class="card card-w-title">
+                                <h:form id="panelEndorsementDetail">
+                                    <!-- TITLE for this FORM-->
+
+                                    <h2>#{i18n['admin.endorsements.detail.title']}</h2>
+                                    <br></br>
+                                    <!-- CONTENT for this FORM-->
+                                    <h:panelGroup id="fullNamePnlGrp" styleClass="md-inputfield">
+                                        <p:inputText id="fullName" 
+                                                     style="width: 100%"
+                                                     value="#{loanDetailManager.endorsement.fullName}"
+                                                     autocomplete="off"
+                                                     readonly="true">
+                                        </p:inputText>
+                                        <label>#{i18n['admin.endorsements.detail.field.name']}</label>
+                                    </h:panelGroup>
+                                    <br></br><br></br>
+                                    <h:panelGroup id="birthdatePnlGrp" styleClass="md-inputfield">
+                                        <p:inputText id="birthdate" 
+                                                     style="width: 100%" 
+                                                     value="#{loanDetailManager.endorsement.birthdate}"
+                                                     autocomplete="off" 
+                                                     readonly="true"
+                                                     />
+                                        <label>#{i18n['admin.endorsements.detail.field.birthdate']}</label>
+                                    </h:panelGroup>
+                                    <br></br><br></br>
+                                    <h:panelGroup id="phoneHomePnlGrp" styleClass="md-inputfield">
+                                        <p:inputText id="phoneHome" 
+                                                     style="width: 100%" 
+                                                     value="#{loanDetailManager.endorsement.phoneHome}"
+                                                     autocomplete="off" 
+                                                     readonly="true"
+                                                     />
+                                        <label>#{i18n['admin.endorsements.detail.field.phoneHome']}</label>
+                                    </h:panelGroup>
+                                    <br></br><br></br>
+                                    <h:panelGroup id="addressHomePnlGrp" styleClass="md-inputfield">
+                                        <p:inputText id="addressHome" 
+                                                     style="width: 100%" 
+                                                     value="#{loanDetailManager.endorsement.addressHome}"
+                                                     autocomplete="off" 
+                                                     readonly="true"
+                                                     />
+                                        <label>#{i18n['admin.endorsements.detail.field.addressHome']}</label>
+                                    </h:panelGroup>
+                                    <br></br><br></br>
+                                    <h:panelGroup id="peopleTypePnlGrp" styleClass="md-inputfield">
+                                        <p:inputText id="peopleType" 
+                                                     style="width: 100%" 
+                                                     value="#{loanDetailManager.endorsement.peopleType.getValue()}"
+                                                     autocomplete="off" 
+                                                     readonly="true"
+                                                     />
+                                        <label>#{i18n['admin.endorsements.detail.field.peopleType']}</label>
+                                    </h:panelGroup>
+                                    <br></br><br></br>
+                                    <h:panelGroup id="routeCtlgPnlGrp" styleClass="md-inputfield">
+                                        <p:inputText id="routeCtlg" 
+                                                     style="width: 100%" 
+                                                     value="#{loanDetailManager.endorsement.routeCtlg.route}"
+                                                     autocomplete="off" 
+                                                     readonly="true"
+                                                     />
+                                        <label>#{i18n['admin.endorsements.detail.field.routeCtlg']}</label>
+                                    </h:panelGroup>
+
+                                </h:form>
+                            </div>
+                        </div>
+                        <div class="ui-g-6">
+                            <div class="card card-w-title">
+                                <h:form id="panelEndorsementCompany">
+                                    <!-- TITLE for this FORM-->
+
+                                    <h2>#{i18n['admin.endorsements.company.title']}</h2>
+                                    <br></br>
+                                    <!-- CONTENT for this FORM-->
+                                    <h:panelGroup id="companyNamePnlGrp" styleClass="md-inputfield">
+                                        <p:inputText id="companyName" 
+                                                     style="width: 100%"
+                                                     value="#{loanDetailManager.endorsement.companyName}"
+                                                     autocomplete="off"
+                                                     readonly="true">
+                                        </p:inputText>
+                                        <label>#{i18n['admin.endorsements.detail.field.companyName']}</label>
+                                    </h:panelGroup>
+                                    <br></br><br></br>
+                                    <h:panelGroup id="phoneBusinessPnlGrp" styleClass="md-inputfield">
+                                        <p:inputText id="phoneBusiness" 
+                                                     style="width: 100%" 
+                                                     value="#{loanDetailManager.endorsement.phoneBusiness}"
+                                                     autocomplete="off" 
+                                                     readonly="true"
+                                                     />
+                                        <label>#{i18n['admin.endorsements.detail.field.phoneBusiness']}</label>
+                                    </h:panelGroup>
+                                    <br></br><br></br>
+                                    <h:panelGroup id="addressBusinessPnlGrp" styleClass="md-inputfield">
+                                        <p:inputText id="addressBusiness" 
+                                                     style="width: 100%" 
+                                                     value="#{loanDetailManager.endorsement.addressBusiness}"
+                                                     autocomplete="off" 
+                                                     readonly="true"
+                                                     />
+                                        <label>#{i18n['admin.endorsements.detail.field.addressBusiness']}</label>
+                                    </h:panelGroup>
+
+                                </h:form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ui-g-12">
+                        <!-- Top center -->
+                        <div class="ui-g-12" style="display:'block'">
+                            <div class="card card-w-title">
+                                <h:form id="formLoanEndorsement">
+                                    <h2>#{i18n['admin.endorsements.loan.title']}</h2>
+                                    <p:growl id="msgs" showDetail="true"/>
+                                    <p:dataTable widgetVar="dtloan" id="dtloan" var="loan" draggableRows="true" draggableColumns="true" value="#{loanDetailManager.loanEndorsement}" style="margin-bottom:20px" reflow="true" rowsPerPageTemplate="5,10,25,50,100" emptyMessage="#{i18n['admin.endorsements.detail.datatable.empty']}"
+                                                 rowKey="#{loan.id}" editable="true" selectionMode="single" paginator="true" rows="10" paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
+
+                                        <f:facet name="header">
+                                            <p:outputPanel>
+                                                <h:outputText value="#{i18n['general.search']}: " />
+                                                <p:inputText id="globalFilter" onkeyup="PF('dtloan').filter()" style="width:150px;color: #000000;"/>
+                                            </p:outputPanel>
+                                        </f:facet>
+
+                                        <p:column headerText="#{i18n['admin.endorsements.detail.datatable.column.customer']}" sortBy="#{loan.customer.fullName}" filterBy="#{loan.customer.fullName}">
+                                            <h:outputText value="#{loan.customer.fullName}" />
+                                        </p:column>
+                                        <p:column headerText="#{i18n['admin.endorsements.detail.datatable.column.loanStatus']}" sortBy="#{loan.loanStatus.value}" filterBy="#{loan.loanStatus.value}">
+                                            <h:outputText value="#{loan.loanStatus.value}" />
+                                        </p:column>
+                                        <p:column headerText="#{i18n['admin.endorsements.detail.datatable.column.amountToPay']}" sortBy="#{loan.amountToPay}" filterBy="#{loan.amountToPay}">
+                                            <h:outputText value="#{loan.amountToPay}">
+                                                <f:convertNumber pattern="¤#,##0.00" locale="en_US" currencySymbol="$" />
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column headerText="#{i18n['admin.endorsements.detail.datatable.column.amountPaid']}" sortBy="#{loan.amountPaid}" filterBy="#{loan.amountPaid}">
+                                            <h:outputText value="#{loan.amountPaid}">
+                                                <f:convertNumber pattern="¤#,##0.00" locale="en_US" currencySymbol="$" />
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column headerText="#{i18n['admin.endorsements.detail.datatable.column.routeCtlg']}" sortBy="#{loan.routeCtlg.route}" filterBy="#{loan.routeCtlg.route}">
+                                            <h:outputText value="#{loan.routeCtlg.route}" />
+                                        </p:column>
+                                        <p:column headerText="#{i18n['admin.endorsements.detail.datatable.column.createdOn']}" sortBy="#{loan.createdOn}" filterBy="#{loan.createdOn}">
+                                            <h:outputText value="#{loan.createdOn}">
+                                                <f:convertDateTime type="date" locale="es" pattern="dd - MMMM - yyyy"/>
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column headerText="#{i18n['admin.endorsements.detail.datatable.column.comments']}" sortBy="#{loan.comments}" filterBy="#{loan.comments}">
+                                            <h:outputText value="#{loan.comments}" />
+                                        </p:column>
+                                        <p:column headerText="#{i18n['admin.endorsements.detail.datatable.column.totalFee']}" sortBy="#{loan.totalFeeByLoan}" filterBy="#{loan.totalFeeByLoan}">
+                                            <h:outputText value="#{loan.totalFeeByLoan}" />
+                                        </p:column>
+
+                                    </p:dataTable>
+                                </h:form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </p:tab>
+            <p:tab title="Información del préstamo" id="refrescarPrestamo">
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12">
+                        <div class="ui-g-3"></div>
+                        <!-- Top center -->
+                        <div class="ui-g-6" style="display:'block'">
+                            <div class="card card-w-title">
+                                <h:form id="createHRForm">
+                                    <!-- TITLE for this FORM-->
+                                    <p:messages id="messages" severity="info, fatal, warn" closable="true" showSummary="true" showDetail="true"/>
+                                    <h4>Préstamo</h4>
+
+                                    <!-- CONTENT for this FORM-->
+                                    <p:panelGrid columns="3" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                                        <h:panelGroup id="loanTypeNamePnlGrp" styleClass="md-inputfield">
+                                            <p:inputText id="loanTypeName" 
+                                                         style="width: 100%"
+                                                         value="#{loanDetailManager.loan.loanType.loanTypeName}"
+                                                         readonly="true">
+                                            </p:inputText>
+                                            <label>#{i18n['catalog.loanTypes.dialog.name.title']}</label>
+                                        </h:panelGroup>
+                                        <h:panelGroup id="totalDaysPnlGrp" styleClass="md-inputfield">
+                                            <p:inputText id="totalDays" 
+                                                         style="width: 100%" 
+                                                         value="#{loanDetailManager.loan.loanType.totalDays}"
+                                                         readonly="true"/>
+                                            <label>#{i18n['catalog.loanTypes.dialog.totalDays.title']}</label>
+                                        </h:panelGroup>
+                                        <h:panelGroup id="paymentPnlGrp" styleClass="md-inputfield">
+                                            <p:inputText id="payment" 
+                                                         style="width: 100%" 
+                                                         value="#{loanDetailManager.loan.loanType.payment}"
+                                                         readonly="true">
+                                                <f:convertNumber pattern="¤#,##0.00" locale="en_US" currencySymbol="$" />
+                                            </p:inputText>
+                                            <label>#{i18n['catalog.loanTypes.dialog.payment.title']}</label>
+                                        </h:panelGroup>
+
+                                    </p:panelGrid>
+
+                                    <p:panelGrid columns="3" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                                        <h:panelGroup id="feePnlGrp" styleClass="md-inputfield">
+                                            <p:inputText id="fee" 
+                                                         style="width: 100%" 
+                                                         value="#{loanDetailManager.loan.loanType.fee}"
+                                                         readonly="true">
+                                                <f:convertNumber pattern="¤#,##0.00" locale="en_US" currencySymbol="$" />
+                                            </p:inputText>
+                                            <label>#{i18n['catalog.loanTypes.dialog.fee.title']}</label>
+                                        </h:panelGroup>
+                                        <h:panelGroup id="paymentDailyPnlGrp" styleClass="md-inputfield">
+                                            <p:inputText id="paymentDaily" 
+                                                         style="width: 100%" 
+                                                         value="#{loanDetailManager.loan.loanType.paymentDaily}"
+                                                         readonly="true">
+                                                <f:convertNumber pattern="¤#,##0.00" locale="en_US" currencySymbol="$" />
+                                            </p:inputText>
+                                            <label>#{i18n['catalog.loanTypes.dialog.paymentDaily.title']}</label>
+                                        </h:panelGroup>
+                                        <h:panelGroup id="openingFeePnlGrp" styleClass="md-inputfield">
+                                            <p:inputText id="openingFee" 
+                                                         style="width: 100%" 
+                                                         value="#{loanDetailManager.loan.loanType.openingFee}"
+                                                         readonly="true">
+                                                <f:convertNumber pattern="¤#,##0.00" locale="en_US" currencySymbol="$" />
+                                            </p:inputText>
+                                            <label>#{i18n['catalog.loanTypes.dialog.openingFee.title']}</label>
+                                        </h:panelGroup>
+                                    </p:panelGrid>
+                                </h:form>
+                            </div>
+                        </div>
+                        <div class="ui-g-3"></div>
+                    </div>
+                    <!-- Popup -->
+
+                </div>
+            </p:tab>
+        </p:tabView>
+
+    </ui:define>
+
+</ui:composition>

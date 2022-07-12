@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Arrebol Consultancy copyright.
+
+This code belongs to Arrebol Consultancy
+its use, redistribution or modification are prohibited 
+without written authorization from Arrebol Consultancy.
+-->
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"https://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    
+    <query name="findEnabledUsersByOffice">
+        <![CDATA[
+            SELECT 
+                e
+            FROM EnabledUserDetailsView e
+            WHERE 
+                idOffice = :officeId
+            ORDER BY e.fullName ASC
+        ]]>
+    </query>
+
+</hibernate-mapping>

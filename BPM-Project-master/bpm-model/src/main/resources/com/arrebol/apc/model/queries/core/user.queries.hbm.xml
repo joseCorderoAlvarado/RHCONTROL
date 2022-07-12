@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"https://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    
+    <query name="findAllUsersByOffice">
+        <![CDATA[
+            SELECT 
+                u.id,
+                u.userName,
+                hr.firstName,
+                hr.lastName,
+                hr.avatar
+            FROM User u
+                INNER JOIN UserByOffice ubo ON u.id = ubo.user
+                INNER JOIN HumanResource hr ON u.humanResource = hr.id
+            WHERE
+                ubo.office = :office AND
+                u.userStatus = 'ENEBLED' AND
+                ubo.userByOfficeStatus = 'ENEBLED' AND
+                hr.humanResourceStatus = 'ENEBLED'
+        ]]>
+    </query>
+    
+    <query name="isUsernameAvailable">
+        <![CDATA[
+            SELECT COUNT(u.id) from User u
+                INNER JOIN  UserByOffice ubo ON u.id = ubo.user
+                INNER JOIN  Office o ON ubo.office = o.id
+            WHERE 
+                u.userName = :userName AND
+                o.id = :id AND
+                u.userStatus = 'ENEBLED' AND
+                ubo.userByOfficeStatus = 'ENEBLED' AND
+                o.officeStatus = 'ENEBLED'
+        ]]>
+    </query>
+    
+    <query name="findAllUsersCompleteByOffice">
+        <![CDATA[
+            SELECT 
+                u
+            FROM User u
+                INNER JOIN UserByOffice ubo ON u.id = ubo.user
+                INNER JOIN HumanResource hr ON u.humanResource = hr.id
+            WHERE
+                ubo.office = :office AND
+                u.userStatus = 'ENEBLED' AND
+                ubo.userByOfficeStatus = 'ENEBLED' AND
+                hr.humanResourceStatus = 'ENEBLED'
+        ]]>
+    </query>
+    
+    <query name="updatePasswordByUserId">
+        <![CDATA[
+            UPDATE 
+                User
+            SET 
+                password = :password
+            WHERE id = :id
+        ]]>
+    </query>
+    
+    <query name="updateCertifierAndUserTypeById">
+        <![CDATA[
+            UPDATE 
+                User
+            SET 
+                userType = :userType,
+                certifier = :certifier,
+                lastUpdatedBy = :lastUpdatedBy,
+                lastUpdatedOn = :lastUpdatedOn
+            WHERE id = :id
+        ]]>
+    </query>
+    
+    <query name="updateUserNameById">
+        <![CDATA[
+            UPDATE 
+                User
+            SET 
+                userName = :userName,
+                lastUpdatedBy = :lastUpdatedBy,
+                lastUpdatedOn = :lastUpdatedOn
+            WHERE id = :id
+        ]]>
+    </query>
+    
+    <query name="updateUserStatusById">
+        <![CDATA[
+            UPDATE 
+                User
+            SET 
+                userStatus = :userStatus,
+                lastUpdatedBy = :lastUpdatedBy,
+                lastUpdatedOn = :lastUpdatedOn
+            WHERE id = :id
+        ]]>
+    </query>
+    
+    <query name="verifyUserStatusById">
+        <![CDATA[
+            SELECT
+                u.id AS id
+            FROM 
+                User u
+            WHERE 
+                u.id = :id AND
+                u.userStatus = 'ENEBLED'
+        ]]>
+    </query>
+    
+</hibernate-mapping>

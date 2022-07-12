@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"https://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    
+    <query name="findAllTransferByOffice">
+        <![CDATA[
+            SELECT 
+                t
+            FROM Transfer t 
+                WHERE office = :office
+                AND activeStatus = :activeStatus
+            ORDER BY createdOn
+        ]]>
+    </query>
+    
+     <query name="findAllTransferByOfficeBetweenDates">
+        <![CDATA[
+            SELECT 
+                t
+            FROM Transfer t 
+                WHERE 
+                    office = :office AND
+                    DATE(createdOn) >= DATE(:startDate) AND 
+                    DATE(:endDate) >= DATE(createdOn)
+            ORDER BY createdOn
+        ]]>
+    </query> 
+ 
+    
+    <query name="findAllTransferByUserTransmitter">
+        <![CDATA[
+            SELECT 
+                t
+            FROM Transfer t 
+                WHERE userTransmitter = :userTransmitter 
+            ORDER BY createdOn
+        ]]>
+    </query>
+    
+    <query name="findAllTransferByUserReceiver">
+        <![CDATA[
+            SELECT 
+                t
+            FROM Transfer t 
+                WHERE userReceiver = :userReceiver 
+            ORDER BY createdOn
+        ]]>
+    </query>
+    
+    <query name="updateTransferByAction">
+        <![CDATA[
+            UPDATE Transfer
+            SET 
+                actionStatus = :actionStatus,
+                lastUpdatedBy = :lastUpdatedBy,
+                lastUpdatedOn = :lastUpdatedOn
+            WHERE id = :id
+        ]]>
+    </query>
+    
+    <query name="updateTransferByActive">
+        <![CDATA[
+            UPDATE Transfer
+            SET 
+                activeStatus = :activeStatus,
+                lastUpdatedBy = :lastUpdatedBy,
+                lastUpdatedOn = :lastUpdatedOn
+            WHERE id = :id
+        ]]>
+    </query>
+    
+    <query name="findAllTransferByUserIdAndCurdate">
+        <![CDATA[
+            SELECT 
+                t.id AS id,
+                CASE
+                    WHEN t.userTransmitter = :userTransmitter
+                    THEN 'SENDER'
+                     WHEN t.userReceiver = :userReceiver
+                    THEN 'RECEIVER'
+                END AS userTransmitter,
+                t.actionStatus AS actionStatus,
+                t.amountToTransfer AS amountToTransfer
+            FROM Transfer t
+            WHERE 
+                (
+                    t.userTransmitter = :userTransmitter 
+                OR 
+                    t.userReceiver = :userReceiver
+                ) AND
+                (
+                    DATE(t.createdOn) = CURDATE() 
+                OR 
+                    DATE(t.lastUpdatedOn) = CURDATE()
+                )
+        ]]>
+    </query>
+    
+</hibernate-mapping>

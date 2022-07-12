@@ -1,0 +1,87 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+    <ui:define name="title">#{i18n['project.short.name']} - #{i18n['user.update.pwd']}</ui:define>
+
+    <ui:define name="breadcrumb">
+        <li><p:link outcome="#{i18n['outcome.privacy']}">#{i18n['user.update.pwd']}</p:link></li>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="ui-g ui-fluid">
+            <div class="ui-g-12 ui-lg-4">
+                <div class="card card-w-title">
+                    <h:form id="pwdForm" rendered="#{loginBean.isUserInRole('system.user.admin.pwd')}">
+                        <p:messages id="messages" severity="info, fatal, warn" closable="true" showSummary="true" showDetail="true"/>
+
+                        <!-- TITLE for this FORM-->
+                        <h1>
+                           #{i18n['user.update.pwd']}
+                        </h1>
+                        
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="passwordPnlGrp"
+                                          styleClass="md-inputfield">
+                                <p:password id="password"
+                                            match="confirmPassword" 
+                                            label="#{i18n.password}" 
+                                            required="true" maxlength="#{privacyBean.pwdMaxlength}"
+                                            inline="true" feedback="true"
+                                            value="#{privacyBean.pwd}"
+                                            validatorMessage="#{i18n['pwd.match.passwords']}" 
+                                            requiredMessage="#{i18n['require.msg.password.empty']}"
+                                            promptLabel="#{i18n['pwd.promptLabel']}"
+                                            weakLabel="#{i18n['pwd.weakLabel']}"
+                                            goodLabel="#{i18n['pwd.goodLabel']}"
+                                            strongLabel="#{i18n['pwd.strongLabel']}"/>
+                                <label>#{i18n.password}</label>
+                                <p:message for="password" display="icon"/>
+                            </h:panelGroup>
+ 
+                            <h:panelGroup id="confirmPasswordPnlGrp"
+                                          styleClass="md-inputfield">
+                                <p:password id="confirmPassword" 
+                                            maxlength="#{privacyBean.pwdMaxlength}"
+                                            value="#{privacyBean.confirmPwd}"
+                                            requiredMessage="#{i18n['pwd.promptLabel.confirm']}."
+                                            label="#{i18n['pwd.promptLabel.confirm']}" 
+                                            required="true"/>
+                                <label>#{i18n['pwd.promptLabel.confirm']}</label>
+                                <p:message for="confirmPassword" display="icon"/>
+                            </h:panelGroup>
+                        </p:panelGrid>
+                        
+                        <!-- Button for this FORM -->
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:commandButton  id="pwdHRBtn"
+                                                  update="passwordPnlGrp
+                                                  confirmPasswordPnlGrp
+                                                  confirmForm:globalConfirmMsg
+                                                  messages"
+                                                  action="#{privacyBean.updatePassword()}"
+                                                  value="#{i18n['user.update.pwd.btn']}">
+                                    <p:confirm header="#{i18n['user.confirm.header']}" 
+                                               message="#{i18n['user.are.you.sure.pwd']}" 
+                                               icon="ui-icon-person"/>
+                                </p:commandButton>
+                            </h:panelGroup>
+                        </p:panelGrid>
+                    </h:form>
+                </div>
+            </div>
+            
+             <!-- Popup -->
+            <h:form id="confirmForm">
+                <p:confirmDialog id="globalConfirmMsg" global="true" showEffect="clip" hideEffect="clip">
+                    <p:commandButton value="#{i18n['confirm.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="#{i18n['confirm.no']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog> 
+            </h:form>
+        </div>
+    </ui:define>
+
+</ui:composition>

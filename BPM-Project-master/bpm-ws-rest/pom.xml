@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.arrebol</groupId>
+    <artifactId>bpm-ws-rest</artifactId>
+    <version>1.0.0</version>
+    <packaging>war</packaging>
+
+    <name>bpm-ws-rest</name>
+
+    <properties>
+        <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <mojarra.version>2.3.14</mojarra.version>
+    </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>8.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.faces</artifactId>
+            <version>${mojarra.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
+            <version>3.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <!-- "Apoyo a Proyectos Comerciales (APC)" Application Dependencies -->
+        <dependency>
+            <groupId>com.arrebol</groupId>
+            <artifactId>bpm-controller-mobile</artifactId>
+            <version>1.0.0</version>
+            <type>jar</type>
+        </dependency>
+        <!--
+        RESTful Web Services in Java.
+
+        About
+        Developing RESTful Web services that seamlessly support exposing 
+        your data in a variety of representation media types and abstract away 
+        the low-level details of the client-server communication is not an easy
+        task without a good toolkit. 
+        
+        In order to simplify development of RESTful Web services and their 
+        clients in Java, a standard and portable JAX-RS API has been designed.
+         
+        Jersey RESTful Web Services framework is open source, production quality, 
+        framework for developing RESTful Web Services in Java that provides 
+        support for JAX-RS APIs and 
+        serves as a JAX-RS (JSR 311 & JSR 339) Reference Implementation.
+
+        Jersey framework is more than the JAX-RS Reference Implementation. 
+        
+        Jersey provides it’s own API that extend the JAX-RS toolkit with 
+        additional features and utilities to further simplify RESTful service 
+        and client development. 
+
+        Jersey also exposes numerous extension SPIs so that developers may 
+        extend Jersey to best suit their needs.
+        -->
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>2.1</version>
+        </dependency>
+        <!--
+        Using any Jersey specific feature, 
+        you will need to depend on Jersey directly.
+        -->
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet</artifactId>
+            <version>2.27</version>
+        </dependency>
+        <!--
+        MOXy 
+        
+        JSON binding support via MOXy is a default and preferred way of 
+        supporting JSON binding in your Jersey applications since Jersey 2.0. 
+        
+        When JSON MOXy module is on the class-path, 
+        Jersey will automatically discover the module and seamlessly 
+        enable JSON binding support via MOXy in your applications.
+        -->
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-moxy</artifactId>
+            <version>2.27</version>
+        </dependency>
+        <!--
+        The classes in this module provide an integration of multipart/* 
+        request and response bodies in a JAX-RS runtime environment. 
+
+        The set of registered providers is leveraged, 
+        in that the content type for a body part of such a message reuses 
+        the same MessageBodyReader<T>/MessageBodyWriter<T> 
+        implementations as would be used for that content type 
+        as a standalone entity.
+        -->
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <version>2.27</version>
+        </dependency>
+        <!--
+        Java Servlet is the foundation web specification 
+        in the Java Enterprise Platform.
+        
+        Developers can build web applications using the Servlet API
+        to interact with the request/response workflow.
+        -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--
+        HK2 is an implementation of JSR-330 in a JavaSE environment.
+
+        JSR-330 defines services and injection points that can be dynamically 
+        discovered at runtime and which allow for Inversion of Control (IoC) 
+        and dependency injection (DI).
+
+        HK2 provides an API for control over its operation and has the 
+        ability to automatically load services into the container.
+
+        It is the foundation for the GlassFish V3 and V4 application 
+        servers as well as other products.
+
+        HK2 also has powerful features that can be used to perform tasks such as
+        looking up services or customizing you injections, 
+        as well as several extensibility features allowing the users to connect
+        with other container technologies.
+        -->
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>2.27</version>
+        </dependency>
+        <!--
+            Testing
+        -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.test-framework</groupId>
+            <artifactId>jersey-test-framework-util</artifactId>
+            <version>2.27</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.test-framework.providers</groupId>
+            <artifactId>jersey-test-framework-provider-bundle</artifactId>
+            <version>2.27</version>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    
+    <profiles>
+        <profile>
+            <id>Localhost-Mobile-APP</id>
+            <properties>
+                <hibernate.connection.url>jdbc:mysql://localhost:3306/apo_pro_com_april_ten?serverTimezone=GMT-5</hibernate.connection.url>
+                <hibernate.connection.username>apoprocommobilelocalhost</hibernate.connection.username>
+                <hibernate.connection.password>0Ps$6%q8</hibernate.connection.password>
+            </properties>
+        </profile>
+        <profile>
+            <id>Amazon-Web-Services-Mobile-APP</id>
+            <properties>
+                <hibernate.connection.url>jdbc:mysql://apoyoaproyectoscomerciales.c9hicmk2emj3.us-east-2.rds.amazonaws.com:3306/apo_pro_com_april_ten?serverTimezone=GMT-6</hibernate.connection.url>
+                <hibernate.connection.username>apoprocommobile</hibernate.connection.username>
+                <hibernate.connection.password>0Ps$6%q8</hibernate.connection.password>
+            </properties>
+        </profile>
+    </profiles>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <compilerArguments>
+                        <endorseddirs>${endorsed.dir}</endorseddirs>
+                    </compilerArguments>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <directory>src/main/webapp/META-INF</directory>
+                            <filtering>true</filtering>
+                            <targetPath>META-INF</targetPath>
+                        </resource>
+                    </webResources>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${endorsed.dir}</outputDirectory>
+                            <silent>true</silent>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>javax</groupId>
+                                    <artifactId>javaee-api</artifactId>
+                                    <version>8.0</version>
+                                    <type>jar</type>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.12.4</version>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

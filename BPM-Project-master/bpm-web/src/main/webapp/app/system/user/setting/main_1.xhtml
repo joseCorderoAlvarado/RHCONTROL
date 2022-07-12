@@ -1,0 +1,663 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">#{i18n['project.short.name']} - #{i18n['system.users']}</ui:define>
+
+    <ui:define name="breadcrumb">
+        <li>#{i18n['system.title']}</li>
+        <li>/</li>
+        <li>#{i18n['system.users']}</li>
+        <li>/</li>
+        <li><p:link outcome="#{i18n['outcome.system.user.setting']}">#{permission['system.user.admin']}</p:link></li>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="ui-g ui-fluid">
+
+            <!-- Left Side -->
+            <div class="ui-g-12 ui-lg-4" style="display: #{loginBean.isUserInRole('system.user.admin.disabled') ? 'block' : 'none'}">
+                <div class="card card-w-title">
+                    <h:form id="disabledHRForm" rendered="#{loginBean.isUserInRole('system.user.admin.disabled')}">
+                        <p:messages id="messages" severity="info, fatal, warn" closable="true" showSummary="true" showDetail="true"/>
+
+                        <!-- TITLE for this FORM-->
+                        <h1>
+                            <h:outputFormat value="#{i18n['office.selected']}">
+                                <f:param value="#{userAdminBean.loggedUser.office.officeName}" />
+                            </h:outputFormat>
+                        </h1>
+                        <h4>
+                            #{i18n['user.disable']}
+                            <p:inputSwitch value="#{userAdminBean.enebled}">
+                                <p:ajax listener="#{userAdminBean.enebledDisabledListener(1)}" 
+                                        update="disableHRBtn disableHRSlct"/>
+                            </p:inputSwitch>
+                        </h4>
+
+                        <!-- CONTENT for this FORM-->
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="disableHRSlctPnlGrp" styleClass="md-inputfield">
+                                <p:selectOneMenu id="disableHRSlct" 
+                                                 filter="true"
+                                                 filterMatchMode="contains"
+                                                 disabled="#{!userAdminBean.enebled}"
+                                                 value="#{userAdminBean.enebledId}" 
+                                                 style="margin-bottom:10px;"
+                                                 validator="selectOneMenuValidator"
+                                                 validatorMessage="#{i18n['user.required']}">
+                                    <f:selectItem itemLabel="#{i18n['select.user']}" itemValue="N/A" />
+                                    <f:selectItems 
+                                        value="#{userAdminBean.enebledLst}" 
+                                        var="enebled" 
+                                        itemValue="#{enebled.id}" 
+                                        itemLabel="#{enebled.user.userName}"/> 
+                                    <p:ajax listener="#{userAdminBean.dropBoxListener(1)}" update="firtsName"/>
+                                </p:selectOneMenu>
+                                <p:message for="disableHRSlct" display="icon"/>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup styleClass="md-inputfield" id="firtsName">
+                                <p:inputText readonly="true" 
+                                             value="#{userAdminBean.enebledSelected.user.humanResource.firstName} #{userAdminBean.enebledSelected.user.humanResource.secondName} #{userAdminBean.enebledSelected.user.humanResource.lastName} #{userAdminBean.enebledSelected.user.humanResource.middleName}"/>
+                                <label>#{i18n['first.name']}</label>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <!-- Button for this FORM -->
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:commandButton  id="disableHRBtn"
+                                                  update="disableHRSlctPnlGrp
+                                                  confirmForm:globalConfirmMsg
+                                                  messages"
+                                                  disabled="#{!userAdminBean.enebled}"
+                                                  action="#{userAdminBean.testActionButtom(true)}"
+                                                  value="#{i18n['user.disable.btn']}"
+                                                  rendered="#{loginBean.isUserInRole('system.user.admin.disabled')}">
+                                    <p:confirm header="#{i18n['user.confirm.header']}" 
+                                               message="#{i18n['user.are.you.sure.disabled']}" 
+                                               icon="ui-icon-person"/>
+                                </p:commandButton>
+                            </h:panelGroup>
+                        </p:panelGrid>
+                    </h:form>
+                </div>
+            </div>
+
+            <!-- Center Side -->
+            <div class="ui-g-12 ui-lg-4" style="display: #{loginBean.isUserInRole('system.user.admin.enebled') ? 'block' : 'none'}">
+                <div class="card card-w-title">
+                    <h:form id="enebledHRForm" rendered="#{loginBean.isUserInRole('system.user.admin.enebled')}">
+                        <p:messages id="messages" severity="info, fatal, warn" closable="true" showSummary="true" showDetail="true"/>
+
+                        <!-- TITLE for this FORM-->
+                        <h1>
+                            <h:outputFormat value="#{i18n['office.selected']}">
+                                <f:param value="#{userAdminBean.loggedUser.office.officeName}" />
+                            </h:outputFormat>
+                        </h1>
+                        <h4>
+                            #{i18n['user.eneble']}
+                            <p:inputSwitch value="#{userAdminBean.disabled}">
+                                <p:ajax listener="#{userAdminBean.enebledDisabledListener(2)}" update="disabledHRBtn disabledHRSlct" />
+                            </p:inputSwitch>
+                        </h4>
+
+                        <!-- CONTENT for this FORM-->
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="disabledHRSlctPnlGrp" styleClass="md-inputfield">
+                                <p:selectOneMenu id="disabledHRSlct" 
+                                                 filter="true"
+                                                 filterMatchMode="contains"
+                                                 disabled="#{!userAdminBean.disabled}"
+                                                 value="#{userAdminBean.disabledId}" 
+                                                 style="margin-bottom:10px;"
+                                                 validator="selectOneMenuValidator"
+                                                 validatorMessage="#{i18n['user.required']}">
+                                    <f:selectItem itemLabel="#{i18n['select.user']}" itemValue="N/A" />
+                                    <f:selectItems 
+                                        value="#{userAdminBean.disabledLst}" 
+                                        var="disabled" 
+                                        itemValue="#{disabled.id}" 
+                                        itemLabel="#{disabled.user.userName}"/>
+                                    <p:ajax listener="#{userAdminBean.dropBoxListener(2)}" update="firtsName"/>
+                                </p:selectOneMenu>
+                                <p:message for="disabledHRSlct" display="icon"/>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup styleClass="md-inputfield" id="firtsName">
+                                <p:inputText readonly="true" 
+                                             value="#{userAdminBean.disabledSelected.user.humanResource.firstName} #{userAdminBean.disabledSelected.user.humanResource.secondName} #{userAdminBean.disabledSelected.user.humanResource.lastName} #{userAdminBean.disabledSelected.user.humanResource.middleName}"/>
+                                <label>#{i18n['first.name']}</label>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <!-- Button for this FORM -->
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:commandButton  id="disabledHRBtn"
+                                                  update="disabledHRSlctPnlGrp
+                                                  confirmForm:globalConfirmMsg
+                                                  messages"
+                                                  disabled="#{!userAdminBean.enebled}"
+                                                  action="#{userAdminBean.testActionButtom(false)}"
+                                                  value="#{i18n['user.eneble.btn']}"
+                                                  rendered="#{loginBean.isUserInRole('system.user.admin.disabled')}">
+                                    <p:confirm header="#{i18n['user.confirm.header']}" 
+                                               message="#{i18n['user.are.you.sure.enebled']}" 
+                                               icon="ui-icon-person"/>
+                                </p:commandButton>
+                            </h:panelGroup>
+                        </p:panelGrid>
+                    </h:form>
+                </div>
+            </div>
+
+            <!-- Right Side -->
+            <div class="ui-g-12 ui-lg-4" style="display: #{loginBean.isUserInRole('system.user.admin.deleted') ? 'block' : 'none'}">
+                <div class="card card-w-title">
+                    <h:form id="deletedHRForm" rendered="#{loginBean.isUserInRole('system.user.admin.deleted')}">
+                        <p:messages id="messages" severity="info, fatal, warn" closable="true" showSummary="true" showDetail="true"/>
+
+                        <!-- TITLE for this FORM-->
+                        <h1>
+                            <h:outputFormat value="#{i18n['office.selected']}">
+                                <f:param value="#{userAdminBean.loggedUser.office.officeName}" />
+                            </h:outputFormat>
+                        </h1>
+                        <h4>
+                            #{i18n['user.delete']}
+                            <p:inputSwitch value="#{userAdminBean.deleted}">
+                                <p:ajax listener="#{userAdminBean.enebledDisabledListener(3)}" update="deletedHRBtn deletedHRSlct" />
+                            </p:inputSwitch>
+                        </h4>
+
+                        <!-- CONTENT for this FORM-->
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="deletedHRSlctPnlGrp" styleClass="md-inputfield">
+                                <p:selectOneMenu id="deletedHRSlct" 
+                                                 filter="true"
+                                                 filterMatchMode="contains"
+                                                 disabled="#{!userAdminBean.deleted}"
+                                                 value="#{userAdminBean.deletedId}" 
+                                                 style="margin-bottom:10px;"
+                                                 validator="selectOneMenuValidator"
+                                                 validatorMessage="#{i18n['user.required']}">
+                                    <f:selectItem itemLabel="#{i18n['select.user']}" itemValue="N/A" />
+                                    <f:selectItems 
+                                        value="#{userAdminBean.deletedLst}" 
+                                        var="deleted" 
+                                        itemValue="#{deleted.id}" 
+                                        itemLabel="#{deleted.user.userName}"/>
+                                    <p:ajax listener="#{userAdminBean.dropBoxListener(3)}" update="firtsName"/>
+                                </p:selectOneMenu>
+                                <p:message for="deletedHRSlct" display="icon"/>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup styleClass="md-inputfield" id="firtsName">
+                                <p:inputText readonly="true" 
+                                             value="#{userAdminBean.deletedSelected.user.humanResource.firstName} #{userAdminBean.deletedSelected.user.humanResource.secondName} #{userAdminBean.deletedSelected.user.humanResource.lastName} #{userAdminBean.deletedSelected.user.humanResource.middleName}"/>
+                                <label>#{i18n['first.name']}</label>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <!-- Button for this FORM -->
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:commandButton  id="deletedHRBtn"
+                                                  update="deletedHRSlctPnlGrp
+                                                  confirmForm:globalConfirmMsg
+                                                  messages"
+                                                  disabled="#{!userAdminBean.deleted}"
+                                                  action="#{userAdminBean.testActionButtom(null)}"
+                                                  value="#{i18n['user.delete.btn']}"
+                                                  rendered="#{loginBean.isUserInRole('system.user.admin.disabled')}">
+                                    <p:confirm header="#{i18n['user.confirm.header']}" 
+                                               message="#{i18n['user.are.you.sure.deleted']}" 
+                                               icon="ui-icon-person"/>
+                                </p:commandButton>
+                            </h:panelGroup>
+                        </p:panelGrid>
+                    </h:form>
+                </div>
+            </div>
+
+            <!-- Second row Left Side -->
+            <div class="ui-g-12 ui-lg-4" style="display: #{loginBean.isUserInRole('system.user.admin.updated') ? 'block' : 'none'}">
+                <div class="card card-w-title">
+                    <h:form id="updatedForm" rendered="#{loginBean.isUserInRole('system.user.admin.updated')}">
+                        <p:messages id="messages" severity="info, fatal, warn" closable="true" showSummary="true" showDetail="true"/>
+
+                        <!-- TITLE for this FORM-->
+                        <h1>
+                            <h:outputFormat value="#{i18n['office.selected']}">
+                                <f:param value="#{userAdminBean.loggedUser.office.officeName}" />
+                            </h:outputFormat>
+                        </h1>
+                        <h4>
+                            #{i18n['user.update']}
+                            <p:inputSwitch value="#{userAdminBean.username}">
+                                <p:ajax listener="#{userAdminBean.enebledDisabledListener(4)}" update="usernameHRSlct usernameHRBtn" />
+                            </p:inputSwitch>
+                        </h4>
+
+                        <!-- CONTENT for this FORM-->
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="usernameHRSlctPnlGrp" styleClass="md-inputfield">
+                                <p:selectOneMenu id="usernameHRSlct" 
+                                                 filter="true"
+                                                 filterMatchMode="contains"
+                                                 disabled="#{!userAdminBean.username}"
+                                                 value="#{userAdminBean.usernameId}" 
+                                                 style="margin-bottom:10px;"
+                                                 validator="selectOneMenuValidator"
+                                                 validatorMessage="#{i18n['user.required']}">
+                                    <f:selectItem itemLabel="#{i18n['select.user']}" itemValue="N/A" />
+                                    <f:selectItems 
+                                        value="#{userAdminBean.userNameLst}" 
+                                        var="username" 
+                                        itemValue="#{username.id}" 
+                                        itemLabel="#{username.user.userName}"/>
+                                    <p:ajax listener="#{userAdminBean.dropBoxListener(4)}" update="firtsName"/>
+                                </p:selectOneMenu>
+                                <p:message for="usernameHRSlct" display="icon"/>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup styleClass="md-inputfield" id="firtsName">
+                                <p:inputText readonly="true" 
+                                             value="#{userAdminBean.userNameSelected.user.humanResource.firstName} #{userAdminBean.userNameSelected.user.humanResource.secondName} #{userAdminBean.userNameSelected.user.humanResource.lastName} #{userAdminBean.userNameSelected.user.humanResource.middleName}"/>
+                                <label>#{i18n['first.name']}</label>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="userNamePnlGrpMain" 
+                                          styleClass="md-inputfield">
+                                <div class="ui-inputgroup">
+                                    <h:panelGroup id="userNamePnlGrp" 
+                                                  styleClass="md-inputfield">
+                                        <p:inputText id="userName" style="width: 100%" 
+                                                     value="#{userCreateBean.user.userName}"
+                                                     autocomplete="off" 
+                                                     required="true"
+                                                     maxlength="#{userCreateBean.pwdMaxlength}"
+                                                     requiredMessage="#{i18n['require.msg.user.empty']}">
+                                            <p:ajax listener="#{userCreateBean.isUsernameAvailable()}"
+                                                    event="change"
+                                                    update="userNamePnlGrpMain"/>
+                                        </p:inputText>
+                                        <label>#{i18n['select.user']}</label>
+                                    </h:panelGroup>
+
+                                    <span class="ui-inputgroup-addon" 
+                                          style='color: #{userCreateBean.user.userName eq null or userCreateBean.user.userName.trim() eq "" ? "#757575" :(userCreateBean.availableUserName ? "blue": "red")}'>
+                                        <i class="material-icons">
+                                            #{userCreateBean.user.userName eq null or userCreateBean.user.userName.trim() eq "" ? 'thumbs_up_down' : (userCreateBean.availableUserName ? 'thumb_up': 'thumb_down')}
+                                        </i>
+                                    </span>
+                                </div>
+                                <p:message for="userName" display="icon" />
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <!-- Button for this FORM -->
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:commandButton  id="usernameHRBtn"
+                                                  update="userNamePnlGrpMain
+                                                  usernameHRSlctPnlGrp
+                                                  confirmForm:globalConfirmMsg
+                                                  messages"
+                                                  disabled="#{!userAdminBean.username}"
+                                                  action="#{userAdminBean.testActionButtom(false)}"
+                                                  value="#{i18n['user.update']}"
+                                                  rendered="#{loginBean.isUserInRole('system.user.admin.disabled')}">
+                                    <p:confirm header="#{i18n['user.confirm.header']}" 
+                                               message="#{i18n['user.are.you.sure.username']}" 
+                                               icon="ui-icon-person"/>
+                                </p:commandButton>
+                            </h:panelGroup>
+                        </p:panelGrid>
+                    </h:form>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+            <div class="ui-g-12 ui-lg-8" style="display: #{loginBean.isUserInRole('system.user.admin.updated') ? 'block' : 'none'}">
+                <div class="card card-w-title">
+                    <h:form id="updateRoutes" rendered="#{loginBean.isUserInRole('system.user.admin.updated')}">
+                        <p:messages id="messages" severity="info, fatal, warn" closable="true" showSummary="true" showDetail="true"/>
+
+                        <!-- TITLE for this FORM-->
+                        <h1>
+                            <h:outputFormat value="#{i18n['office.selected']}">
+                                <f:param value="#{userAdminBean.loggedUser.office.officeName}" />
+                            </h:outputFormat>
+                        </h1>
+                        <h4>
+                            #{i18n['user.update.routes']}
+                            <p:inputSwitch value="#{userAdminBean.route}">
+                                <p:ajax listener="#{userAdminBean.enebledDisabledListener(7)}" 
+                                        update="routeUserSlct routeBtn" />
+                            </p:inputSwitch>
+                        </h4>
+
+                        <!-- CONTENT for this FORM-->
+                        <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="routeSlctPnlGrp" styleClass="md-inputfield">
+                                <p:selectOneMenu id="routeUserSlct" 
+                                                 filter="true"
+                                                 filterMatchMode="contains"
+                                                 disabled="#{!userAdminBean.route}"
+                                                 value="#{userAdminBean.routeId}" 
+                                                 style="margin-bottom:10px;"
+                                                 validator="selectOneMenuValidator"
+                                                 validatorMessage="#{i18n['user.required']}">
+                                    <f:selectItem itemLabel="#{i18n['select.user']}" itemValue="N/A" />
+                                    <f:selectItems 
+                                        value="#{userAdminBean.routeLst}" 
+                                        var="usr" 
+                                        itemValue="#{usr.id}" 
+                                        itemLabel="#{usr.user.userName}"/>
+                                    <p:ajax listener="#{userAdminBean.dropBoxListener(7)}" 
+                                            update="firtsName certifierPnlGrp"/>
+                                </p:selectOneMenu>
+                                <p:message for="routeUserSlct" display="icon"/>
+                            </h:panelGroup>
+                            
+                            <h:panelGroup styleClass="md-inputfield" id="firtsName">
+                                <p:inputText readonly="true" 
+                                             value="#{userAdminBean.routeSelect.user.humanResource.firstName} #{userAdminBean.routeSelect.user.humanResource.secondName} #{userAdminBean.routeSelect.user.humanResource.lastName} #{userAdminBean.routeSelect.user.humanResource.middleName}"/>
+                                <label>#{i18n['first.name']}</label>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="userTypeSlctPnlGrp" styleClass="md-inputfield">
+                                <p:selectOneMenu id="userTypeSlct" 
+                                                 value="#{userCreateBean.userType}" 
+                                                 validator="selectOneMenuValidator"
+                                                 validatorMessage="#{i18n['user.type.required']}">
+                                    <p:ajax listener="#{userCreateBean.onUserTypeSlctChange}" 
+                                            update="certifier
+                                            routesSlct
+                                            routesSlctPnlGrd
+                                            routesPickListPnl" />
+                                    <f:selectItem itemLabel="Tipo usuario" itemValue="N/A" />
+                                    <f:selectItem itemLabel="Web" itemValue="WEB"/>
+                                    <f:selectItem itemLabel="Móvil" itemValue="MOBILE"/>
+                                    <f:selectItem itemLabel="Ambos" itemValue="BOTH"/>
+                                </p:selectOneMenu>
+                                <p:message for="userTypeSlct" display="icon"/>
+                            </h:panelGroup>
+
+                            <h:panelGroup id="certifierPnlGrp" 
+                                          style="display: #{userAdminBean.route ? 'block' : 'none'}">
+                                <p:selectBooleanCheckbox 
+                                    value="#{userAdminBean.certifier}" 
+                                    id="certifier"
+                                    disabled="#{userAdminBean.userType eq null || userAdminBean.userType eq 'N/A' || userAdminBean.userType eq 'WEB'}">
+                                    <p:ajax listener="#{userAdminBean.onCertifiedChange}" 
+                                            update="routesSlct
+                                            routesSlctPnlGrd
+                                            routesPickListPnl" />
+                                </p:selectBooleanCheckbox>Certificador
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="3" layout="grid" 
+                                     id="routesSlctPnlGrd" 
+                                     style="display: #{((userAdminBean.userType eq 'MOBILE' or userAdminBean.userType eq 'BOTH') and !userAdminBean.certifier) ? 'block' : 'none'}"
+                                     styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="routesSlctPnlGrp" styleClass="md-inputfield">
+                                <p:selectOneMenu id="routesSlct" 
+                                                 filter="true"
+                                                 filterMatchMode="contains"
+                                                 value="#{userAdminBean.route}" 
+                                                 validator="selectOneMenuValidator"
+                                                 validatorMessage="#{i18n['catalog.routes.dialog.require.msg.color.empty']}">
+                                    <f:selectItem itemLabel="#{i18n['catalog.route']}" itemValue="N/A" />
+                                    <f:selectItems 
+                                        value="#{userAdminBean.routeCtlgLst}" 
+                                        var="route" 
+                                        itemValue="#{route.id}" 
+                                        itemLabel="#{route.route}"/>
+                                </p:selectOneMenu>
+                                <p:message for="routesSlct" display="icon"/>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <p:panelGrid id="routesPickListPnl"
+                                     style="display: #{userAdminBean.certifier ? 'block' : 'none'}"
+                                     columns="1" layout="grid" 
+                                     styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="routesPnlGrp" styleClass="md-inputfield">
+                                <p:pickList id="routesPickList" 
+                                            value="#{userAdminBean.dualRouteCtlgLst}" 
+                                            var="routeVar" 
+                                            itemLabel="#{routeVar.route}"
+                                            itemValue="#{routeVar}"
+                                            showSourceFilter="true" 
+                                            showTargetFilter="true" 
+                                            filterMatchMode="contains" 
+                                            converter="genericConverter" 
+                                            responsive="true"
+                                            moveBottomLabel="#{i18n['pick.bottom']}" 
+                                            moveTopLabel="#{i18n['pick.top']}" 
+                                            moveDownLabel="#{i18n['pick.down']}" 
+                                            moveUpLabel="#{i18n['pick.up']}" 
+                                            required="#{userAdminBean.dualRouteCtlgLst.source.size() > 0}"
+                                            requiredMessage="#{i18n['dual.list.routes.required']}"
+                                            addAllLabel="#{i18n['pick.add.all']}" 
+                                            addLabel="#{i18n['pick.add']}" 
+                                            removeAllLabel="#{i18n['pick.remove.all']}" 
+                                            removeLabel="#{i18n['pick.remove']}">
+                                    <f:facet name="sourceCaption">
+                                        <span style="color: #757575">
+                                            #{i18n['dual.list.routes.available']}
+                                        </span>
+                                    </f:facet>
+                                    <f:facet name="targetCaption">
+                                        <span style="color: #757575">
+                                            #{i18n['dual.list.routes.taken']}
+                                        </span>
+                                    </f:facet>
+                                </p:pickList>
+                                <p:message for="routesPickList" display="icon"/>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <!-- Button for this FORM -->
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:commandButton  id="routeBtn"
+                                                  update="routeSlctPnlGrp
+                                                  confirmForm:globalConfirmMsg
+                                                  messages"
+                                                  disabled="#{!userAdminBean.username}"
+                                                  action="#{userAdminBean.testActionButtom(false)}"
+                                                  value="#{i18n['user.update.routes']}"
+                                                  rendered="#{loginBean.isUserInRole('system.user.admin.disabled')}">
+                                    <p:confirm header="#{i18n['user.confirm.header']}" 
+                                               message="#{i18n['user.are.you.sure.username']}" 
+                                               icon="ui-icon-person"/>
+                                </p:commandButton>
+                            </h:panelGroup>
+                        </p:panelGrid>
+                    </h:form>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+            <!-- Second row Center Side -->
+            <div class="ui-g-12 ui-lg-4" style="display: #{loginBean.isUserInRole('system.user.admin.pwd') ? 'block' : 'none'}">
+                <div class="card card-w-title">
+                    <h:form id="pwdForm" rendered="#{loginBean.isUserInRole('system.user.admin.pwd')}">
+                        <p:messages id="messages" severity="info, fatal, warn" closable="true" showSummary="true" showDetail="true"/>
+
+                        <!-- TITLE for this FORM-->
+                        <h1>
+                            <h:outputFormat value="#{i18n['office.selected']}">
+                                <f:param value="#{userAdminBean.loggedUser.office.officeName}" />
+                            </h:outputFormat>
+                        </h1>
+                        <h4>
+                            #{i18n['user.update.pwd.btn']}
+                            <p:inputSwitch value="#{userAdminBean.pwd}">
+                                <p:ajax listener="#{userAdminBean.enebledDisabledListener(5)}" 
+                                        update="pwdHRBtn pwdHRSlct" />
+                            </p:inputSwitch>
+                        </h4>
+
+                        <!-- CONTENT for this FORM-->
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="pwdHRSlctPnlGrp" styleClass="md-inputfield">
+                                <p:selectOneMenu id="pwdHRSlct" 
+                                                 filter="true"
+                                                 filterMatchMode="contains"
+                                                 disabled="#{!userAdminBean.pwd}"
+                                                 value="#{userAdminBean.pwdId}" 
+                                                 style="margin-bottom:10px;"
+                                                 validator="selectOneMenuValidator"
+                                                 validatorMessage="#{i18n['user.required']}">
+                                    <f:selectItem itemLabel="#{i18n['select.user']}" itemValue="N/A" />
+                                    <f:selectItems 
+                                        value="#{userAdminBean.pwdLst}" 
+                                        var="pwd" 
+                                        itemValue="#{pwd.id}" 
+                                        itemLabel="#{pwd.user.userName}"/>
+                                    <p:ajax listener="#{userAdminBean.dropBoxListener(5)}" update="firtsName"/>
+                                </p:selectOneMenu>
+                                <p:message for="pwdHRSlct" display="icon"/>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup styleClass="md-inputfield" id="firtsName">
+                                <p:inputText readonly="true" 
+                                             value="#{userAdminBean.pwdSelected.user.humanResource.firstName} #{userAdminBean.pwdSelected.user.humanResource.secondName} #{userAdminBean.pwdSelected.user.humanResource.lastName} #{userAdminBean.pwdSelected.user.humanResource.middleName}"/>
+                                <label>#{i18n['first.name']}</label>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup id="passwordPnlGrp"
+                                          styleClass="md-inputfield">
+                                <p:password id="password"
+                                            match="confirmPassword" 
+                                            label="#{i18n.password}" 
+                                            required="true" maxlength="#{userCreateBean.pwdMaxlength}"
+                                            inline="true" feedback="true"
+                                            value="#{userCreateBean.user.password}"
+                                            validatorMessage="#{i18n['pwd.match.passwords']}" 
+                                            requiredMessage="#{i18n['require.msg.password.empty']}"
+                                            promptLabel="#{i18n['pwd.promptLabel']}"
+                                            weakLabel="#{i18n['pwd.weakLabel']}"
+                                            goodLabel="#{i18n['pwd.goodLabel']}"
+                                            strongLabel="#{i18n['pwd.strongLabel']}"/>
+                                <label>#{i18n.password}</label>
+                                <p:message for="password" display="icon"/>
+                            </h:panelGroup>
+
+                            <h:panelGroup id="confirmPasswordPnlGrp"
+                                          styleClass="md-inputfield">
+                                <p:password id="confirmPassword" maxlength="15"
+                                            value="#{userCreateBean.pwdConfirm}"
+                                            requiredMessage="#{i18n['pwd.promptLabel.confirm']}."
+                                            label="#{i18n['pwd.promptLabel.confirm']}" 
+                                            required="true"/>
+                                <label>#{i18n['pwd.promptLabel.confirm']}</label>
+                                <p:message for="confirmPassword" display="icon"/>
+                            </h:panelGroup>
+                        </p:panelGrid>
+
+                        <!-- Button for this FORM -->
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:commandButton  id="pwdHRBtn"
+                                                  update="pwdHRSlctPnlGrp passwordPnlGrp confirmPasswordPnlGrp
+                                                  confirmForm:globalConfirmMsg
+                                                  messages"
+                                                  disabled="#{!userAdminBean.pwd}"
+                                                  action="#{userAdminBean.testActionButtom(true)}"
+                                                  value="#{i18n['user.update.pwd.btn']}"
+                                                  rendered="#{loginBean.isUserInRole('system.user.admin.pwd')}">
+                                    <p:confirm header="#{i18n['user.confirm.header']}" 
+                                               message="#{i18n['user.are.you.sure.pwd']}" 
+                                               icon="ui-icon-person"/>
+                                </p:commandButton>
+                            </h:panelGroup>
+                        </p:panelGrid>
+                    </h:form>
+                </div>
+            </div>
+
+            <!-- Second row Right Side -->
+            <div class="ui-g-12 ui-lg-4" style="display: #{loginBean.isUserInRole('system.user.admin.avatar') ? 'block' : 'none'}">
+                <div class="card card-w-title">
+                    <h:form id="imageForm" rendered="#{loginBean.isUserInRole('system.user.admin.avatar')}">
+                        <p:messages id="messages" severity="info, fatal, warn" closable="true" showSummary="true" showDetail="true"/>
+                        <h1>
+                            <h:outputFormat value="#{i18n['office.selected']}">
+                                <f:param value="#{userCreateBean.loggedUser.office.officeName}" />
+                            </h:outputFormat>
+                        </h1>
+                        <h4>#{i18n['photo.add']}</h4>
+
+                        <p:fileUpload fileUploadListener="#{fileUploadView.handleFileUpload}" 
+                                      mode="advanced"
+                                      disabled="true"
+                                      dragDropSupport="false"
+                                      multiple="true" 
+                                      update="messages" 
+                                      sizeLimit="100000" 
+                                      fileLimit="3"
+                                      style="display:table-cell;"
+                                      label="#{i18n.select}"
+                                      cancelLabel="#{i18n.cancel}"
+                                      uploadLabel="#{i18n.upload}"
+                                      allowTypes="/(\.|\/)(gif|jpe?g|png)$/"/>
+                    </h:form>
+                </div>
+            </div>
+
+            <!-- Popup -->
+            <h:form id="confirmForm">
+                <p:confirmDialog id="globalConfirmMsg" global="true" showEffect="clip" hideEffect="clip">
+                    <p:commandButton value="#{i18n['confirm.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="#{i18n['confirm.no']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog> 
+            </h:form>
+        </div>
+    </ui:define>
+
+</ui:composition>

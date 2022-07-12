@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"https://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    
+    <query name="findAllOfficesByUser">
+        <![CDATA[
+            SELECT 
+                o.id,
+                o.officeName
+            FROM Office o
+                INNER JOIN UserByOffice ubo ON o.id = ubo.office
+            WHERE
+                ubo.user = :user AND
+                ubo.userByOfficeStatus = 'ENEBLED' AND
+                o.officeStatus = 'ENEBLED'
+        ]]>
+    </query>
+    
+    <query name="findAllOfficesActives">
+        <![CDATA[
+            SELECT 
+                o
+            FROM Office o
+            WHERE
+                officeStatus = :officeStatus
+        ]]>
+    </query>
+    
+    <query name="updateByOfficeId">
+        <![CDATA[
+            UPDATE Office
+            SET 
+                officeStatus = :officeStatus,
+                lastUpdatedBy = :lastUpdatedBy,
+                lastUpdatedOn = :lastUpdatedOn
+            WHERE
+                id = :id
+        ]]>
+    </query>
+    
+</hibernate-mapping>

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"https://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    
+    <query name="deletePermissionByUserIdAndOfficeId">
+        <![CDATA[
+            DELETE
+            FROM UserByOfficeHasPermission 
+            WHERE
+                userByOffice = :userByOffice AND
+                permission NOT IN (
+                    SELECT p
+                    FROM Permission p
+                    WHERE p.permissionType IN ('PUBLIC','EXCLUSIVE')
+                ) 
+        ]]>
+    </query>
+    
+    <query name="deleteAllPermissionByUBO">
+        <![CDATA[
+            DELETE FROM
+                UserByOfficeHasPermission
+            WHERE 
+                userByOffice = :userByOffice
+        ]]>
+    </query>
+    
+</hibernate-mapping>

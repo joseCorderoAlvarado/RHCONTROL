@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"https://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    
+    <query name="findAllClosingDayByOffice">
+        <![CDATA[
+            SELECT 
+                c
+            FROM ClosingDay c 
+                WHERE office = :office
+                AND activeStatus = :activeStatus
+            ORDER BY createdOn DESC
+        ]]>
+    </query> 
+    
+    <query name="findAllClosingDayByOfficeBetweenCreatedOn">
+        <![CDATA[
+            SELECT 
+                c
+            FROM ClosingDay c 
+                WHERE c.office = :office
+                AND DATE(c.createdOn) BETWEEN DATE(:startDate) AND DATE(:endDate)
+            ORDER BY c.createdOn DESC
+        ]]>
+    </query> 
+    
+    <query name="findAllClosingDayByCurdate">
+        <![CDATA[
+            SELECT 
+                c
+            FROM ClosingDay c 
+                WHERE office = :office
+                AND activeStatus = :activeStatus
+                AND createdOn = :createdOn
+        ]]>
+    </query> 
+
+    
+    <query name="updateClosingDayByStatus">
+        <![CDATA[
+            UPDATE ClosingDay
+            SET 
+                activeStatus = :activeStatus,
+                lastUpdatedBy = :lastUpdatedBy,
+                lastUpdatedOn = :lastUpdatedOn
+            WHERE id = :id
+        ]]>
+    </query>
+    
+    <query name="countClosingDateByUserAndOffice">
+        <![CDATA[
+            SELECT 
+                COUNT(id) 
+            FROM 
+                ClosingDay 
+            WHERE
+                user = :user AND 
+                office = :office AND 
+                activeStatus = 'ENEBLED' AND 
+                DATE(createdOn) = CURDATE()
+        ]]>
+    </query>
+    
+    <query name="findSumClosingDayByCurdate">
+        <![CDATA[
+            SELECT 
+                SUM(amountPaid)
+            FROM ClosingDay c 
+                WHERE office = :office
+                AND activeStatus = 'ENEBLED'
+                AND DATE(createdOn) = CURDATE()
+        ]]>
+    </query> 
+    
+</hibernate-mapping>

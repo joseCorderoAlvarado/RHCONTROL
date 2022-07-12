@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"https://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    
+    <query name="findAllHRWithoutUser">
+        <![CDATA[
+            SELECT 
+                hr
+            FROM HumanResource hr
+                INNER JOIN HumanResourceByOffice hrbo ON hr.id = hrbo.humanResource
+                LEFT JOIN User u ON hr.id = u.humanResource
+            WHERE
+                hrbo.office = :office AND
+                hr.humanResourceStatus IN :humanResourceStatus AND
+                hrbo.applicationOwner != 'APP_OWNER' AND 
+                u.humanResource IS NULL
+        ]]>
+    </query>
+    
+    <query name="findAllHByStatus">
+        <![CDATA[
+            SELECT 
+                hr
+            FROM HumanResource hr
+                INNER JOIN HumanResourceByOffice hrbo ON hr.id = hrbo.humanResource
+            WHERE
+                hrbo.office = :office AND
+                hrbo.applicationOwner != 'APP_OWNER' AND 
+                hr.humanResourceStatus = :humanResourceStatus AND
+                hrbo.id != (
+                    SELECT id
+                    FROM HumanResourceByOffice
+                    WHERE office = :office AND humanResource = :humanResource
+                )
+        ]]>
+    </query>
+   
+    <query name="findAllHRInStatus">
+        <![CDATA[
+            SELECT 
+                hr
+            FROM HumanResource hr
+                INNER JOIN HumanResourceByOffice hrbo ON hr.id = hrbo.humanResource
+            WHERE
+                hrbo.office = :office AND
+                hrbo.applicationOwner != 'APP_OWNER' AND 
+                hr.humanResourceStatus IN :humanResourceStatus AND
+                hrbo.id != (
+                    SELECT id
+                    FROM HumanResourceByOffice
+                    WHERE office = :office AND humanResource = :humanResource
+                )
+        ]]>
+    </query>
+    
+    <query name="updateHRByStatus">
+        <![CDATA[
+            UPDATE HumanResource
+            SET 
+                humanResourceStatus = :humanResourceStatus,
+                lastUpdatedBy = :lastUpdatedBy,
+                lastUpdatedOn = :lastUpdatedOn
+            WHERE
+                id = :id
+        ]]>
+    </query>
+    
+    <query name="findAllHRByOffice">
+        <![CDATA[
+            SELECT 
+                hr
+            FROM HumanResource hr
+                INNER JOIN HumanResourceByOffice hrbo ON hr.id = hrbo.humanResource
+            WHERE
+                hrbo.office = :office 
+            AND
+                hr.humanResourceStatus = :humanResourceStatus
+        ]]>
+    </query>
+    
+    <query name="deleteAllHRHasRouteByHR">
+        <![CDATA[
+            DELETE FROM 
+                HumanResourceHasRoute
+            WHERE
+                humanResource = :humanResource
+        ]]>
+    </query>
+    
+</hibernate-mapping>
